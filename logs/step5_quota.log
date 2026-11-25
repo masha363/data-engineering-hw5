@@ -1,0 +1,244 @@
+
+===== 2026-11-25 22:02:02 шаг 5.1: квота пространства имён hw5-quota =====
+
+$ cat k8s/30-quota.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: hw5-quota
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: hw5-quota
+  namespace: hw5-quota
+spec:
+  hard:
+    pods: "3"
+    requests.cpu: "1"
+    requests.memory: 1Gi
+    limits.cpu: "2"
+    limits.memory: 2Gi
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: s3-credentials
+  namespace: hw5-quota
+stringData:
+  access-key: rustfsadmin
+  secret-key: rustfsadmin
+
+$ kubectl apply -f k8s/30-quota.yaml
+namespace/hw5-quota created
+resourcequota/hw5-quota created
+secret/s3-credentials created
+
+$ kubectl -n hw5-quota describe resourcequota hw5-quota
+Name:            hw5-quota
+Namespace:       hw5-quota
+Resource         Used  Hard
+--------         ----  ----
+limits.cpu       0     2
+limits.memory    0     2Gi
+pods             0     3
+requests.cpu     0     1
+requests.memory  0     1Gi
+
+===== 2026-11-25 22:02:02 шаг 5.2: под без заявок и пределов =====
+
+$ kubectl apply -f k8s/31-pod-no-resources.yaml
+Error from server (Forbidden): error when creating "k8s/31-pod-no-resources.yaml": pods "no-resources" is forbidden: failed quota: hw5-quota: must specify limits.cpu for: work; limits.memory for: work; requests.cpu for: work; requests.memory for: work
+
+===== 2026-11-25 22:02:02 шаг 5.3: задание просит 2 CPU при квоте 1 CPU =====
+
+$ kubectl apply -f k8s/32-job-big-request.yaml
+job.batch/big-request created
+
+$ kubectl -n hw5-quota get pods
+No resources found in hw5-quota namespace.
+
+$ kubectl -n hw5-quota describe job big-request
+Name:             big-request
+Namespace:        hw5-quota
+Selector:         batch.kubernetes.io/controller-uid=9b9a29d9-9e65-43b0-a96e-770bb157b146
+Labels:           batch.kubernetes.io/controller-uid=9b9a29d9-9e65-43b0-a96e-770bb157b146
+                  batch.kubernetes.io/job-name=big-request
+                  controller-uid=9b9a29d9-9e65-43b0-a96e-770bb157b146
+                  job-name=big-request
+Annotations:      <none>
+Parallelism:      1
+Completions:      1
+Completion Mode:  NonIndexed
+Suspend:          false
+Backoff Limit:    0
+Start Time:       Wed, 25 Nov 2026 22:02:03 +0300
+Pods Statuses:    0 Active (0 Ready) / 0 Succeeded / 0 Failed
+Pod Template:
+  Labels:  batch.kubernetes.io/controller-uid=9b9a29d9-9e65-43b0-a96e-770bb157b146
+           batch.kubernetes.io/job-name=big-request
+           controller-uid=9b9a29d9-9e65-43b0-a96e-770bb157b146
+           job-name=big-request
+  Containers:
+   work:
+    Image:      skills:1.0
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      sleep
+      10
+    Limits:
+      cpu:     2
+      memory:  128Mi
+    Requests:
+      cpu:         2
+      memory:      128Mi
+    Environment:   <none>
+    Mounts:        <none>
+  Volumes:         <none>
+  Node-Selectors:  <none>
+  Tolerations:     <none>
+Events:
+  Type     Reason        Age   From            Message
+  ----     ------        ----  ----            -------
+  Warning  FailedCreate  8s    job-controller  Error creating: pods "big-request-rxvh2" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=2, used: requests.cpu=0, limited: requests.cpu=1
+  Warning  FailedCreate  7s    job-controller  Error creating: pods "big-request-hn7w6" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=2, used: requests.cpu=0, limited: requests.cpu=1
+  Warning  FailedCreate  5s    job-controller  Error creating: pods "big-request-pvvrs" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=2, used: requests.cpu=0, limited: requests.cpu=1
+  Warning  FailedCreate  1s    job-controller  Error creating: pods "big-request-6wwql" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=2, used: requests.cpu=0, limited: requests.cpu=1
+job.batch "big-request" deleted from hw5-quota namespace
+
+===== 2026-11-25 22:02:11 шаг 5.4: расчёт пар по 4 частям под квотой (4 x 400m > 1 CPU) =====
+
+$ kubectl apply -f k8s/33-job-parts-quota.yaml
+job.batch/skills-parts-quota created
+--- 22:02:14
+NAME                         READY   STATUS    RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+skills-parts-quota-0-lbpnz   1/1     Running   0          4s    10.244.0.36   hw5-control-plane   <none>           <none>
+skills-parts-quota-1-g98t2   1/1     Running   0          4s    10.244.0.35   hw5-control-plane   <none>           <none>
+used: {"limits.cpu":"1","limits.memory":"1280Mi","pods":"2","requests.cpu":"800m","requests.memory":"512Mi"}
+--- 22:02:18
+NAME                         READY   STATUS    RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+skills-parts-quota-0-lbpnz   1/1     Running   0          7s    10.244.0.36   hw5-control-plane   <none>           <none>
+skills-parts-quota-1-g98t2   1/1     Running   0          7s    10.244.0.35   hw5-control-plane   <none>           <none>
+used: {"limits.cpu":"1","limits.memory":"1280Mi","pods":"2","requests.cpu":"800m","requests.memory":"512Mi"}
+--- 22:02:21
+NAME                         READY   STATUS              RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+skills-parts-quota-0-lbpnz   0/1     Completed           0          10s   10.244.0.36   hw5-control-plane   <none>           <none>
+skills-parts-quota-1-g98t2   0/1     Completed           0          10s   10.244.0.35   hw5-control-plane   <none>           <none>
+skills-parts-quota-2-zsnww   0/1     ContainerCreating   0          0s    <none>        hw5-control-plane   <none>           <none>
+skills-parts-quota-3-8jc62   0/1     ContainerCreating   0          0s    <none>        hw5-control-plane   <none>           <none>
+used: {"limits.cpu":"1","limits.memory":"1280Mi","pods":"2","requests.cpu":"800m","requests.memory":"512Mi"}
+--- 22:02:24
+NAME                         READY   STATUS      RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+skills-parts-quota-0-lbpnz   0/1     Completed   0          14s   10.244.0.36   hw5-control-plane   <none>           <none>
+skills-parts-quota-1-g98t2   0/1     Completed   0          14s   10.244.0.35   hw5-control-plane   <none>           <none>
+skills-parts-quota-2-zsnww   1/1     Running     0          4s    10.244.0.38   hw5-control-plane   <none>           <none>
+skills-parts-quota-3-8jc62   1/1     Running     0          4s    10.244.0.37   hw5-control-plane   <none>           <none>
+used: {"limits.cpu":"1","limits.memory":"1280Mi","pods":"2","requests.cpu":"800m","requests.memory":"512Mi"}
+--- 22:02:28
+NAME                         READY   STATUS      RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+skills-parts-quota-0-lbpnz   0/1     Completed   0          17s   10.244.0.36   hw5-control-plane   <none>           <none>
+skills-parts-quota-1-g98t2   0/1     Completed   0          17s   10.244.0.35   hw5-control-plane   <none>           <none>
+skills-parts-quota-2-zsnww   0/1     Completed   0          7s    10.244.0.38   hw5-control-plane   <none>           <none>
+skills-parts-quota-3-8jc62   0/1     Completed   0          7s    10.244.0.37   hw5-control-plane   <none>           <none>
+used: {"limits.cpu":"0","limits.memory":"0","pods":"0","requests.cpu":"0","requests.memory":"0"}
+--- 22:02:31
+NAME                         READY   STATUS      RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+skills-parts-quota-0-lbpnz   0/1     Completed   0          20s   10.244.0.36   hw5-control-plane   <none>           <none>
+skills-parts-quota-1-g98t2   0/1     Completed   0          20s   10.244.0.35   hw5-control-plane   <none>           <none>
+skills-parts-quota-2-zsnww   0/1     Completed   0          10s   10.244.0.38   hw5-control-plane   <none>           <none>
+skills-parts-quota-3-8jc62   0/1     Completed   0          10s   10.244.0.37   hw5-control-plane   <none>           <none>
+used: {"limits.cpu":"0","limits.memory":"0","pods":"0","requests.cpu":"0","requests.memory":"0"}
+
+$ kubectl -n hw5-quota wait --for=condition=Complete job/skills-parts-quota --timeout=600s
+job.batch/skills-parts-quota condition met
+
+$ kubectl -n hw5-quota get events --sort-by=.lastTimestamp
+LAST SEEN   TYPE      REASON             OBJECT                           MESSAGE
+29s         Warning   FailedCreate       job/big-request                  Error creating: pods "big-request-rxvh2" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=2, used: requests.cpu=0, limited: requests.cpu=1
+28s         Warning   FailedCreate       job/big-request                  Error creating: pods "big-request-hn7w6" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=2, used: requests.cpu=0, limited: requests.cpu=1
+26s         Warning   FailedCreate       job/big-request                  Error creating: pods "big-request-pvvrs" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=2, used: requests.cpu=0, limited: requests.cpu=1
+22s         Warning   FailedCreate       job/big-request                  Error creating: pods "big-request-6wwql" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=2, used: requests.cpu=0, limited: requests.cpu=1
+21s         Normal    SuccessfulCreate   job/skills-parts-quota           Created pod: skills-parts-quota-0-lbpnz
+21s         Normal    Scheduled          pod/skills-parts-quota-0-lbpnz   Successfully assigned hw5-quota/skills-parts-quota-0-lbpnz to hw5-control-plane
+21s         Normal    SuccessfulCreate   job/skills-parts-quota           Created pod: skills-parts-quota-1-g98t2
+21s         Warning   FailedCreate       job/skills-parts-quota           Error creating: pods "skills-parts-quota-2-2cxr4" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+21s         Normal    Scheduled          pod/skills-parts-quota-1-g98t2   Successfully assigned hw5-quota/skills-parts-quota-1-g98t2 to hw5-control-plane
+20s         Normal    Started            pod/skills-parts-quota-0-lbpnz   Container started
+20s         Normal    Pulled             pod/skills-parts-quota-1-g98t2   Container image "skills:1.0" already present on machine and can be accessed by the pod
+20s         Normal    Started            pod/skills-parts-quota-1-g98t2   Container started
+20s         Normal    Created            pod/skills-parts-quota-1-g98t2   Container created
+20s         Warning   FailedCreate       job/skills-parts-quota           Error creating: pods "skills-parts-quota-2-gxvk5" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+20s         Normal    Pulled             pod/skills-parts-quota-0-lbpnz   Container image "skills:1.0" already present on machine and can be accessed by the pod
+20s         Normal    Created            pod/skills-parts-quota-0-lbpnz   Container created
+19s         Warning   FailedCreate       job/skills-parts-quota           Error creating: pods "skills-parts-quota-2-zpbdl" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+15s         Warning   FailedCreate       job/skills-parts-quota           Error creating: pods "skills-parts-quota-2-wbskh" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+12s         Warning   FailedCreate       job/skills-parts-quota           Error creating: pods "skills-parts-quota-2-hcv9q" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+11s         Normal    Scheduled          pod/skills-parts-quota-3-8jc62   Successfully assigned hw5-quota/skills-parts-quota-3-8jc62 to hw5-control-plane
+11s         Normal    Scheduled          pod/skills-parts-quota-2-zsnww   Successfully assigned hw5-quota/skills-parts-quota-2-zsnww to hw5-control-plane
+11s         Normal    SuccessfulCreate   job/skills-parts-quota           Created pod: skills-parts-quota-2-zsnww
+11s         Normal    SuccessfulCreate   job/skills-parts-quota           Created pod: skills-parts-quota-3-8jc62
+10s         Normal    Created            pod/skills-parts-quota-3-8jc62   Container created
+10s         Normal    Started            pod/skills-parts-quota-3-8jc62   Container started
+10s         Normal    Pulled             pod/skills-parts-quota-3-8jc62   Container image "skills:1.0" already present on machine and can be accessed by the pod
+10s         Normal    Started            pod/skills-parts-quota-2-zsnww   Container started
+10s         Normal    Created            pod/skills-parts-quota-2-zsnww   Container created
+10s         Normal    Pulled             pod/skills-parts-quota-2-zsnww   Container image "skills:1.0" already present on machine and can be accessed by the pod
+4s          Normal    Completed          job/skills-parts-quota           Job completed
+
+$ kubectl -n hw5-quota get pods -l job-name=skills-parts-quota -o custom-columns=POD:.metadata.name,INDEX:.metadata.annotations.batch\.kubernetes\.io/job-completion-index,CREATED:.metadata.creationTimestamp,START:.status.startTime
+POD                          INDEX   CREATED                START
+skills-parts-quota-0-lbpnz   0       2026-11-25T19:02:11Z   2026-11-25T19:02:11Z
+skills-parts-quota-1-g98t2   1       2026-11-25T19:02:11Z   2026-11-25T19:02:11Z
+skills-parts-quota-2-zsnww   2       2026-11-25T19:02:21Z   2026-11-25T19:02:21Z
+skills-parts-quota-3-8jc62   3       2026-11-25T19:02:21Z   2026-11-25T19:02:21Z
+
+$ kubectl apply -f k8s/34-job-merge-quota.yaml
+job.batch/skills-merge-quota created
+
+$ kubectl -n hw5-quota wait --for=condition=Complete job/skills-merge-quota --timeout=300s
+job.batch/skills-merge-quota condition met
+
+$ cat logs/job_skills-merge-quota.log
+2026-11-25 19:02:33 собираю части: ['k8s-quota/parts/part-00.json', 'k8s-quota/parts/part-01.json', 'k8s-quota/parts/part-02.json', 'k8s-quota/parts/part-03.json']
+2026-11-25 19:02:34 строк 56044, вакансий варианта 54607, с навыками 33662
+2026-11-25 19:02:34 навыков уникальных 9219, вхождений 231229; пар уникальных 157717, вхождений 1004033
+2026-11-25 19:02:34   вакансий варианта                54607 / 54607        да
+2026-11-25 19:02:34   с навыками                       33662 / 33662        да
+2026-11-25 19:02:34   навыков уникальных               9219 / 9219          да
+2026-11-25 19:02:34   навыков вхождений                231229 / 231229      да
+2026-11-25 19:02:34   пар уникальных                   157717 / 157717      да
+2026-11-25 19:02:34   пар вхождений                    1004033 / 1004033    да
+2026-11-25 19:02:34   троек вхождений (сумма C(n,3))   3872336 / 3872336    да
+2026-11-25 19:02:34   распределение числа навыков      по всем n            да
+2026-11-25 19:02:35   таблица k1: строк 9219 / 9219, расхождений 0
+2026-11-25 19:02:36   таблица k2: строк 157717 / 157717, расхождений 0
+2026-11-25 19:02:37 топ-10 пар навыков:
+2026-11-25 19:02:37    1. BPMN + UML: 3880
+2026-11-25 19:02:37    2. BPMN + SQL: 2966
+2026-11-25 19:02:37    3. SQL + UML: 2681
+2026-11-25 19:02:37    4. Python + SQL: 2671
+2026-11-25 19:02:37    5. Анализ данных + Аналитическое мышление: 2507
+2026-11-25 19:02:37    6. SQL + Системный анализ: 2442
+2026-11-25 19:02:37    7. BPMN + Системный анализ: 2238
+2026-11-25 19:02:37    8. Аналитическое мышление + Работа с большим объемом информации: 2236
+2026-11-25 19:02:37    9. UML + Системный анализ: 2055
+2026-11-25 19:02:37   10. SQL + Аналитическое мышление: 2050
+2026-11-25 19:02:37 топ-10 совпадает с ДЗ 3: да
+2026-11-25 19:02:37 сверка с ДЗ 3: ВСЁ СОВПАЛО
+2026-11-25 19:02:38 результат записан в s3://hh-lake/k8s-quota/result/ за 5.81 с
+2026-11-25 19:02:38 PEAK_RSS_MB=209.5
+2026-11-25 19:02:38 CGROUP_PEAK_MB=201.2 (память контейнера вместе со страничным кэшем)
+
+$ kubectl -n hw5-quota describe resourcequota hw5-quota
+Name:            hw5-quota
+Namespace:       hw5-quota
+Resource         Used  Hard
+--------         ----  ----
+limits.cpu       0     2
+limits.memory    0     2Gi
+pods             0     3
+requests.cpu     0     1
+requests.memory  0     1Gi
+
+===== 2026-11-25 22:02:42 шаг 5 готов =====

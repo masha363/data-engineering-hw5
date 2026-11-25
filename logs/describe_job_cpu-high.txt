@@ -1,0 +1,45 @@
+Name:             cpu-high
+Namespace:        hw5
+Selector:         batch.kubernetes.io/controller-uid=f75252b6-6132-42d8-83f8-163fdc0b6a83
+Labels:           batch.kubernetes.io/controller-uid=f75252b6-6132-42d8-83f8-163fdc0b6a83
+                  batch.kubernetes.io/job-name=cpu-high
+                  controller-uid=f75252b6-6132-42d8-83f8-163fdc0b6a83
+                  exp=scheduling
+                  job-name=cpu-high
+Annotations:      <none>
+Parallelism:      1
+Completions:      1
+Completion Mode:  NonIndexed
+Suspend:          false
+Backoff Limit:    6
+Start Time:       Wed, 25 Nov 2026 21:59:14 +0300
+Pods Statuses:    1 Active (1 Ready) / 0 Succeeded / 0 Failed
+Pod Template:
+  Labels:  batch.kubernetes.io/controller-uid=f75252b6-6132-42d8-83f8-163fdc0b6a83
+           batch.kubernetes.io/job-name=cpu-high
+           controller-uid=f75252b6-6132-42d8-83f8-163fdc0b6a83
+           exp=scheduling
+           job-name=cpu-high
+  Containers:
+   work:
+    Image:      skills:1.0
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      sleep
+      45
+    Limits:
+      memory:  64Mi
+    Requests:
+      cpu:              1500m
+      memory:           32Mi
+    Environment:        <none>
+    Mounts:             <none>
+  Volumes:              <none>
+  Priority Class Name:  hw5-high
+  Node-Selectors:       <none>
+  Tolerations:          <none>
+Events:
+  Type    Reason            Age   From            Message
+  ----    ------            ----  ----            -------
+  Normal  SuccessfulCreate  16s   job-controller  Created pod: cpu-high-t5h5p

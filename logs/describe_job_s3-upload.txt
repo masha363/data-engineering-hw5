@@ -1,0 +1,55 @@
+Name:             s3-upload
+Namespace:        hw5
+Selector:         batch.kubernetes.io/controller-uid=ef6eddd9-e873-422b-9cf5-86d74712c74b
+Labels:           batch.kubernetes.io/controller-uid=ef6eddd9-e873-422b-9cf5-86d74712c74b
+                  batch.kubernetes.io/job-name=s3-upload
+                  controller-uid=ef6eddd9-e873-422b-9cf5-86d74712c74b
+                  job-name=s3-upload
+Annotations:      <none>
+Parallelism:      1
+Completions:      1
+Completion Mode:  NonIndexed
+Suspend:          false
+Backoff Limit:    3
+Start Time:       Wed, 25 Nov 2026 21:57:37 +0300
+Completed At:     Wed, 25 Nov 2026 21:57:45 +0300
+Duration:         8s
+Pods Statuses:    0 Active (0 Ready) / 1 Succeeded / 0 Failed
+Pod Template:
+  Labels:  batch.kubernetes.io/controller-uid=ef6eddd9-e873-422b-9cf5-86d74712c74b
+           batch.kubernetes.io/job-name=s3-upload
+           controller-uid=ef6eddd9-e873-422b-9cf5-86d74712c74b
+           job-name=s3-upload
+  Containers:
+   upload:
+    Image:      skills:1.0
+    Port:       <none>
+    Host Port:  <none>
+    Args:
+      python
+      skills.py
+      upload
+      /data/hh_analysts_2024.csv
+    Limits:
+      memory:  512Mi
+    Requests:
+      cpu:     250m
+      memory:  128Mi
+    Environment:
+      S3_ENDPOINT:    http://rustfs.hw5.svc.cluster.local:9000
+      S3_ACCESS_KEY:  <set to the key 'access-key' in secret 's3-credentials'>  Optional: false
+      S3_SECRET_KEY:  <set to the key 'secret-key' in secret 's3-credentials'>  Optional: false
+    Mounts:
+      /data from data (ro)
+  Volumes:
+   data:
+    Type:          HostPath (bare host directory volume)
+    Path:          /hostdata
+    HostPathType:  Directory
+  Node-Selectors:  <none>
+  Tolerations:     <none>
+Events:
+  Type    Reason            Age   From            Message
+  ----    ------            ----  ----            -------
+  Normal  SuccessfulCreate  8s    job-controller  Created pod: s3-upload-bd22v
+  Normal  Completed         0s    job-controller  Job completed

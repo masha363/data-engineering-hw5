@@ -1,0 +1,42 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: skills-parts-quota
+  namespace: hw5-quota
+spec:
+  completionMode: Indexed
+  completions: 4
+  parallelism: 4
+  backoffLimit: 4
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: part
+          image: skills:1.0
+          imagePullPolicy: IfNotPresent
+          args: ["python", "skills.py", "part"]
+          env:
+            - name: PARTS
+              value: "4"
+            - name: RUN
+              value: k8s-quota
+            - name: S3_ENDPOINT
+              value: http://rustfs.hw5.svc.cluster.local:9000
+            - name: S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: access-key
+            - name: S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: s3-credentials
+                  key: secret-key
+          resources:
+            requests:
+              cpu: 400m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 640Mi

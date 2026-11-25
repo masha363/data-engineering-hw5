@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: no-resources
+  namespace: hw5-quota
+spec:
+  restartPolicy: Never
+  containers:
+    - name: work
+      image: skills:1.0
+      imagePullPolicy: IfNotPresent
+      command: ["sleep", "10"]

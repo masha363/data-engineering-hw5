@@ -1,0 +1,250 @@
+
+===== 2026-11-25 21:44:50 шаг 2.1: задание с пределом памяти 64Mi =====
+
+$ cat k8s/01-job-oom.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: skills-oom
+  namespace: hw5
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: skills
+          image: skills:1.0
+          imagePullPolicy: IfNotPresent
+          args: ["python", "skills.py", "local", "/data/hh_analysts_2024.csv"]
+          resources:
+            requests:
+              cpu: 500m
+              memory: 64Mi
+            limits:
+              cpu: "1"
+              memory: 64Mi
+          volumeMounts:
+            - name: data
+              mountPath: /data
+              readOnly: true
+      volumes:
+        - name: data
+          hostPath:
+            path: /hostdata
+            type: Directory
+
+$ kubectl apply -f k8s/01-job-oom.yaml
+job.batch/skills-oom created
+
+$ kubectl -n hw5 wait --for=condition=Failed job/skills-oom --timeout=180s
+job.batch/skills-oom condition met
+
+$ kubectl -n hw5 get pod skills-oom-7xpkk -o jsonpath={"reason: "}{.status.containerStatuses[0].state.terminated.reason}{"  exitCode: "}{.status.containerStatuses[0].state.terminated.exitCode}{"\n"}
+reason: OOMKilled  exitCode: 137
+
+$ kubectl -n hw5 describe pod skills-oom-7xpkk
+Name:             skills-oom-7xpkk
+Namespace:        hw5
+Priority:         0
+Service Account:  default
+Node:             hw5-control-plane/172.22.0.2
+Start Time:       Wed, 25 Nov 2026 21:44:51 +0300
+Labels:           batch.kubernetes.io/controller-uid=b8c154df-0a59-4493-9df4-33503e14698c
+                  batch.kubernetes.io/job-name=skills-oom
+                  controller-uid=b8c154df-0a59-4493-9df4-33503e14698c
+                  job-name=skills-oom
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.0.5
+IPs:
+  IP:           10.244.0.5
+Controlled By:  Job/skills-oom
+Containers:
+  skills:
+    Container ID:  containerd://61d1c13f29a82601ecdbc8838a7b29e5c9acbcf3708177a50eafc21d1a7b23c9
+    Image:         skills:1.0
+    Image ID:      docker.io/library/import-2026-11-25@sha256:99e9b53a8b7b7d9287b89d50a974a93bebf886660e6d414e0cb824231937fa17
+    Port:          <none>
+    Host Port:     <none>
+    Args:
+      python
+      skills.py
+      local
+      /data/hh_analysts_2024.csv
+    State:          Terminated
+      Reason:       OOMKilled
+      Exit Code:    137
+      Started:      Wed, 25 Nov 2026 21:44:52 +0300
+      Finished:     Wed, 25 Nov 2026 21:44:54 +0300
+    Ready:          False
+    Restart Count:  0
+    Limits:
+      cpu:     1
+      memory:  64Mi
+    Requests:
+      cpu:        500m
+      memory:     64Mi
+    Environment:  <none>
+    Mounts:
+      /data from data (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-m2ckg (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  data:
+    Type:          HostPath (bare host directory volume)
+    Path:          /hostdata
+    HostPathType:  Directory
+  kube-api-access-m2ckg:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  6s    default-scheduler  Successfully assigned hw5/skills-oom-7xpkk to hw5-control-plane
+  Normal  Pulled     5s    kubelet            spec.containers{skills}: Container image "skills:1.0" already present on machine and can be accessed by the pod
+  Normal  Created    5s    kubelet            spec.containers{skills}: Container created
+  Normal  Started    5s    kubelet            spec.containers{skills}: Container started
+
+$ kubectl -n hw5 get events --field-selector involvedObject.name=skills-oom
+LAST SEEN   TYPE      REASON                 OBJECT           MESSAGE
+6s          Normal    SuccessfulCreate       job/skills-oom   Created pod: skills-oom-7xpkk
+0s          Warning   BackoffLimitExceeded   job/skills-oom   Job has reached the specified backoff limit
+
+===== 2026-11-25 21:44:57 шаг 2.2: замер пика памяти с пределом 1Gi =====
+
+$ kubectl apply -f k8s/02-job-measure.yaml
+job.batch/skills-measure created
+
+$ kubectl -n hw5 wait --for=condition=Complete job/skills-measure --timeout=300s
+job.batch/skills-measure condition met
+
+$ cat logs/job_skills-measure.log
+2026-11-25 18:44:58 режим local: читаю /data/hh_analysts_2024.csv (212.6 МБ)
+2026-11-25 18:45:00 строк 56044, вакансий варианта 54607, пар уникальных 157717, вхождений 1004033
+2026-11-25 18:45:00   вакансий варианта                54607 / 54607        да
+2026-11-25 18:45:00   с навыками                       33662 / 33662        да
+2026-11-25 18:45:00   навыков уникальных               9219 / 9219          да
+2026-11-25 18:45:00   навыков вхождений                231229 / 231229      да
+2026-11-25 18:45:00   пар уникальных                   157717 / 157717      да
+2026-11-25 18:45:00   пар вхождений                    1004033 / 1004033    да
+2026-11-25 18:45:00   троек вхождений (сумма C(n,3))   3872336 / 3872336    да
+2026-11-25 18:45:00   распределение числа навыков      по всем n            да
+2026-11-25 18:45:00   таблица k1: строк 9219 / 9219, расхождений 0
+2026-11-25 18:45:01   таблица k2: строк 157717 / 157717, расхождений 0
+2026-11-25 18:45:01 топ-10 пар навыков:
+2026-11-25 18:45:01    1. BPMN + UML: 3880
+2026-11-25 18:45:01    2. BPMN + SQL: 2966
+2026-11-25 18:45:01    3. SQL + UML: 2681
+2026-11-25 18:45:01    4. Python + SQL: 2671
+2026-11-25 18:45:01    5. Анализ данных + Аналитическое мышление: 2507
+2026-11-25 18:45:01    6. SQL + Системный анализ: 2442
+2026-11-25 18:45:01    7. BPMN + Системный анализ: 2238
+2026-11-25 18:45:01    8. Аналитическое мышление + Работа с большим объемом информации: 2236
+2026-11-25 18:45:01    9. UML + Системный анализ: 2055
+2026-11-25 18:45:01   10. SQL + Аналитическое мышление: 2050
+2026-11-25 18:45:01 топ-10 совпадает с ДЗ 3: да
+2026-11-25 18:45:01 сверка с ДЗ 3: ВСЁ СОВПАЛО
+2026-11-25 18:45:01 время расчёта 3.22 с
+2026-11-25 18:45:01 PEAK_RSS_MB=154.9
+2026-11-25 18:45:01 CGROUP_PEAK_MB=344.6 (память контейнера вместе со страничным кэшем)
+
+измеренный пик RSS: 154.9 МБ -> requests.memory=160Mi (пик, округлён вверх до 16Mi), limits.memory=208Mi (пик x 1.25)
+
+===== 2026-11-25 21:45:04 шаг 2.3: задание с подобранным пределом =====
+
+$ cat k8s/03-job-fit.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: skills-fit
+  namespace: hw5
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: skills
+          image: skills:1.0
+          imagePullPolicy: IfNotPresent
+          args: ["python", "skills.py", "local", "/data/hh_analysts_2024.csv"]
+          resources:
+            requests:
+              cpu: 500m
+              memory: 160Mi
+            limits:
+              cpu: "1"
+              memory: 208Mi
+          volumeMounts:
+            - name: data
+              mountPath: /data
+              readOnly: true
+      volumes:
+        - name: data
+          hostPath:
+            path: /hostdata
+            type: Directory
+
+$ kubectl apply -f k8s/03-job-fit.yaml
+job.batch/skills-fit created
+
+$ kubectl -n hw5 wait --for=condition=Complete job/skills-fit --timeout=300s
+job.batch/skills-fit condition met
+
+$ cat logs/job_skills-fit.log
+2026-11-25 18:45:05 режим local: читаю /data/hh_analysts_2024.csv (212.6 МБ)
+2026-11-25 18:45:07 строк 56044, вакансий варианта 54607, пар уникальных 157717, вхождений 1004033
+2026-11-25 18:45:07   вакансий варианта                54607 / 54607        да
+2026-11-25 18:45:07   с навыками                       33662 / 33662        да
+2026-11-25 18:45:07   навыков уникальных               9219 / 9219          да
+2026-11-25 18:45:07   навыков вхождений                231229 / 231229      да
+2026-11-25 18:45:07   пар уникальных                   157717 / 157717      да
+2026-11-25 18:45:07   пар вхождений                    1004033 / 1004033    да
+2026-11-25 18:45:07   троек вхождений (сумма C(n,3))   3872336 / 3872336    да
+2026-11-25 18:45:07   распределение числа навыков      по всем n            да
+2026-11-25 18:45:07   таблица k1: строк 9219 / 9219, расхождений 0
+2026-11-25 18:45:07   таблица k2: строк 157717 / 157717, расхождений 0
+2026-11-25 18:45:08 топ-10 пар навыков:
+2026-11-25 18:45:08    1. BPMN + UML: 3880
+2026-11-25 18:45:08    2. BPMN + SQL: 2966
+2026-11-25 18:45:08    3. SQL + UML: 2681
+2026-11-25 18:45:08    4. Python + SQL: 2671
+2026-11-25 18:45:08    5. Анализ данных + Аналитическое мышление: 2507
+2026-11-25 18:45:08    6. SQL + Системный анализ: 2442
+2026-11-25 18:45:08    7. BPMN + Системный анализ: 2238
+2026-11-25 18:45:08    8. Аналитическое мышление + Работа с большим объемом информации: 2236
+2026-11-25 18:45:08    9. UML + Системный анализ: 2055
+2026-11-25 18:45:08   10. SQL + Аналитическое мышление: 2050
+2026-11-25 18:45:08 топ-10 совпадает с ДЗ 3: да
+2026-11-25 18:45:08 сверка с ДЗ 3: ВСЁ СОВПАЛО
+2026-11-25 18:45:08 время расчёта 2.97 с
+2026-11-25 18:45:08 PEAK_RSS_MB=155.0
+2026-11-25 18:45:08 CGROUP_PEAK_MB=208.0 (память контейнера вместе со страничным кэшем)
+
+$ kubectl -n hw5 get jobs
+NAME             STATUS     COMPLETIONS   DURATION   AGE
+skills-fit       Complete   1/1           6s         6s
+skills-measure   Complete   1/1           7s         13s
+skills-oom       Failed     0/1           19s        19s
+
+$ kubectl -n hw5 get pods -o wide
+NAME                   READY   STATUS      RESTARTS   AGE   IP           NODE                NOMINATED NODE   READINESS GATES
+skills-fit-s2hs4       0/1     Completed   0          6s    10.244.0.7   hw5-control-plane   <none>           <none>
+skills-measure-x7792   0/1     Completed   0          13s   10.244.0.6   hw5-control-plane   <none>           <none>
+skills-oom-7xpkk       0/1     OOMKilled   0          19s   10.244.0.5   hw5-control-plane   <none>           <none>
+
+===== 2026-11-25 21:45:10 шаг 2 готов =====

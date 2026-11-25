@@ -1,0 +1,74 @@
+Name:             skills-oom-7xpkk
+Namespace:        hw5
+Priority:         0
+Service Account:  default
+Node:             hw5-control-plane/172.22.0.2
+Start Time:       Wed, 25 Nov 2026 21:44:51 +0300
+Labels:           batch.kubernetes.io/controller-uid=b8c154df-0a59-4493-9df4-33503e14698c
+                  batch.kubernetes.io/job-name=skills-oom
+                  controller-uid=b8c154df-0a59-4493-9df4-33503e14698c
+                  job-name=skills-oom
+Annotations:      <none>
+Status:           Failed
+IP:               10.244.0.5
+IPs:
+  IP:           10.244.0.5
+Controlled By:  Job/skills-oom
+Containers:
+  skills:
+    Container ID:  containerd://61d1c13f29a82601ecdbc8838a7b29e5c9acbcf3708177a50eafc21d1a7b23c9
+    Image:         skills:1.0
+    Image ID:      docker.io/library/import-2026-11-25@sha256:99e9b53a8b7b7d9287b89d50a974a93bebf886660e6d414e0cb824231937fa17
+    Port:          <none>
+    Host Port:     <none>
+    Args:
+      python
+      skills.py
+      local
+      /data/hh_analysts_2024.csv
+    State:          Terminated
+      Reason:       OOMKilled
+      Exit Code:    137
+      Started:      Wed, 25 Nov 2026 21:44:52 +0300
+      Finished:     Wed, 25 Nov 2026 21:44:54 +0300
+    Ready:          False
+    Restart Count:  0
+    Limits:
+      cpu:     1
+      memory:  64Mi
+    Requests:
+      cpu:        500m
+      memory:     64Mi
+    Environment:  <none>
+    Mounts:
+      /data from data (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-m2ckg (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   False 
+  Initialized                 True 
+  Ready                       False 
+  ContainersReady             False 
+  PodScheduled                True 
+Volumes:
+  data:
+    Type:          HostPath (bare host directory volume)
+    Path:          /hostdata
+    HostPathType:  Directory
+  kube-api-access-m2ckg:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  6s    default-scheduler  Successfully assigned hw5/skills-oom-7xpkk to hw5-control-plane
+  Normal  Pulled     5s    kubelet            spec.containers{skills}: Container image "skills:1.0" already present on machine and can be accessed by the pod
+  Normal  Created    5s    kubelet            spec.containers{skills}: Container created
+  Normal  Started    5s    kubelet            spec.containers{skills}: Container started

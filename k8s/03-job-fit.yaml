@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: skills-fit
+  namespace: hw5
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: skills
+          image: skills:1.0
+          imagePullPolicy: IfNotPresent
+          args: ["python", "skills.py", "local", "/data/hh_analysts_2024.csv"]
+          resources:
+            requests:
+              cpu: 500m
+              memory: 160Mi
+            limits:
+              cpu: "1"
+              memory: 208Mi
+          volumeMounts:
+            - name: data
+              mountPath: /data
+              readOnly: true
+      volumes:
+        - name: data
+          hostPath:
+            path: /hostdata
+            type: Directory

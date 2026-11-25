@@ -1,0 +1,135 @@
+
+===== 2026-11-25 21:57:26 шаг 3.1: RustFS внутри кластера =====
+образ RustFS: rustfs/rustfs:latest (узел kind скачивает его сам)
+job.batch "s3-upload" deleted from hw5 namespace
+job.batch "skills-parts" deleted from hw5 namespace
+job.batch "skills-merge" deleted from hw5 namespace
+
+$ kubectl apply -f k8s/10-rustfs.applied.yaml
+secret/s3-credentials configured
+service/rustfs unchanged
+statefulset.apps/rustfs configured
+pod "rustfs-0" deleted from hw5 namespace
+
+$ kubectl -n hw5 rollout status statefulset/rustfs --timeout=300s
+Waiting for 1 pods to be ready...
+partitioned roll out complete: 1 new pods have been updated...
+
+$ kubectl -n hw5 get statefulset,pods,svc,pvc -o wide
+NAME                      READY   AGE   CONTAINERS   IMAGES
+statefulset.apps/rustfs   1/1     12m   rustfs       rustfs/rustfs:latest
+
+NAME                       READY   STATUS        RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+pod/rustfs-0               1/1     Running       0          5s    10.244.0.23   hw5-control-plane   <none>           <none>
+pod/skills-fit-s2hs4       0/1     Completed     0          12m   10.244.0.7    hw5-control-plane   <none>           <none>
+pod/skills-measure-x7792   0/1     Completed     0          12m   10.244.0.6    hw5-control-plane   <none>           <none>
+pod/skills-merge-bcq9f     1/1     Terminating   0          12s   10.244.0.22   hw5-control-plane   <none>           <none>
+pod/skills-oom-7xpkk       0/1     OOMKilled     0          12m   10.244.0.5    hw5-control-plane   <none>           <none>
+
+NAME             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)             AGE   SELECTOR
+service/rustfs   ClusterIP   10.96.169.239   <none>        9000/TCP,9001/TCP   12m   app=rustfs
+
+NAME                                   STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE   VOLUMEMODE
+persistentvolumeclaim/disk0-rustfs-0   Bound    pvc-f2e6b94d-fb26-4e66-b34f-5926e4520ab6   2Gi        RWO            standard       <unset>                 12m   Filesystem
+persistentvolumeclaim/disk1-rustfs-0   Bound    pvc-cc98a8a7-fc0b-4889-b357-5b2185a16a7f   2Gi        RWO            standard       <unset>                 12m   Filesystem
+persistentvolumeclaim/disk2-rustfs-0   Bound    pvc-a5b55b99-ec71-48a3-b1e2-d2ff698c7065   2Gi        RWO            standard       <unset>                 12m   Filesystem
+persistentvolumeclaim/disk3-rustfs-0   Bound    pvc-c7374959-ea19-45b0-a4f1-38eca3150e96   2Gi        RWO            standard       <unset>                 12m   Filesystem
+
+$ tail -n 30 logs/pod_rustfs-0.log
+WARNING: RUSTFS_ACCESS_KEY uses the default rustfsadmin credential. Set non-default credentials for production deployments; with an all-default pair, multi-node clusters additionally need RUSTFS_RPC_SECRET to derive internode RPC auth.
+WARNING: RUSTFS_SECRET_KEY uses the default rustfsadmin credential. Set non-default credentials for production deployments; with an all-default pair, multi-node clusters additionally need RUSTFS_RPC_SECRET to derive internode RPC auth.
+Initializing data directories: /data/rustfs0 /data/rustfs1 /data/rustfs2 /data/rustfs3
+Initializing log directory: /logs
+Starting: /usr/bin/rustfs  /data/rustfs0 /data/rustfs1 /data/rustfs2 /data/rustfs3
+
+===== 2026-11-25 21:57:37 шаг 3.2: загрузка данных в s3://hh-lake/raw/hh_analysts_2024.csv =====
+
+$ kubectl apply -f k8s/11-job-upload.yaml
+job.batch/s3-upload created
+
+$ kubectl -n hw5 wait --for=condition=Complete job/s3-upload --timeout=300s
+job.batch/s3-upload condition met
+
+$ cat logs/job_s3-upload.log
+2026-11-25 18:57:38 создан бакет hh-lake
+2026-11-25 18:57:42 загружено s3://hh-lake/raw/hh_analysts_2024.csv: 222881810 байт за 3.8 с, ETag "37f997d0228aec778ad9296402525c27-27"
+2026-11-25 18:57:42 объекты в бакете: ['raw/hh_analysts_2024.csv']
+
+===== 2026-11-25 21:57:45 шаг 3.3: параллельный расчёт по 4 частям объекта (Indexed Job) =====
+
+$ kubectl apply -f k8s/12-job-parts.yaml
+job.batch/skills-parts created
+
+$ kubectl -n hw5 get pods -l job-name=skills-parts -o wide
+NAME                   READY   STATUS    RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+skills-parts-0-92w2w   1/1     Running   0          4s    10.244.0.27   hw5-control-plane   <none>           <none>
+skills-parts-1-q5c8c   1/1     Running   0          4s    10.244.0.26   hw5-control-plane   <none>           <none>
+skills-parts-2-5bfxr   1/1     Running   0          4s    10.244.0.25   hw5-control-plane   <none>           <none>
+skills-parts-3-b26dr   1/1     Running   0          4s    10.244.0.28   hw5-control-plane   <none>           <none>
+
+$ kubectl -n hw5 wait --for=condition=Complete job/skills-parts --timeout=600s
+job.batch/skills-parts condition met
+
+$ kubectl -n hw5 get pods -l job-name=skills-parts -o custom-columns=POD:.metadata.name,INDEX:.metadata.annotations.batch\.kubernetes\.io/job-completion-index,START:.status.startTime,PHASE:.status.phase
+POD                    INDEX   START                  PHASE
+skills-parts-0-92w2w   0       2026-11-25T18:57:46Z   Succeeded
+skills-parts-1-q5c8c   1       2026-11-25T18:57:46Z   Succeeded
+skills-parts-2-5bfxr   2       2026-11-25T18:57:46Z   Succeeded
+skills-parts-3-b26dr   3       2026-11-25T18:57:46Z   Succeeded
+
+$ cat logs/job_skills-parts.log
+Found 4 pods, using pod/skills-parts-0-92w2w
+2026-11-25 18:57:50 часть 0 из 4: байты [0, 55720452) объекта 222881810 байт, разбираю записи [223, 55724370)
+2026-11-25 18:57:52 часть 0: строк 14009, вакансий варианта 13639, пар уникальных 71547; записано s3://hh-lake/k8s/parts/part-00.json за 5.54 с
+2026-11-25 18:57:52 PEAK_RSS_MB=290.2
+2026-11-25 18:57:52 CGROUP_PEAK_MB=284.9 (память контейнера вместе со страничным кэшем)
+
+===== 2026-11-25 21:57:57 шаг 3.4: слияние частей и сверка с ДЗ 3 =====
+
+$ kubectl apply -f k8s/13-job-merge.yaml
+job.batch/skills-merge created
+
+$ kubectl -n hw5 wait --for=condition=Complete job/skills-merge --timeout=300s
+job.batch/skills-merge condition met
+
+$ cat logs/job_skills-merge.log
+2026-11-25 18:57:58 собираю части: ['k8s/parts/part-00.json', 'k8s/parts/part-01.json', 'k8s/parts/part-02.json', 'k8s/parts/part-03.json']
+2026-11-25 18:57:59 строк 56044, вакансий варианта 54607, с навыками 33662
+2026-11-25 18:57:59 навыков уникальных 9219, вхождений 231229; пар уникальных 157717, вхождений 1004033
+2026-11-25 18:57:59   вакансий варианта                54607 / 54607        да
+2026-11-25 18:57:59   с навыками                       33662 / 33662        да
+2026-11-25 18:57:59   навыков уникальных               9219 / 9219          да
+2026-11-25 18:57:59   навыков вхождений                231229 / 231229      да
+2026-11-25 18:57:59   пар уникальных                   157717 / 157717      да
+2026-11-25 18:57:59   пар вхождений                    1004033 / 1004033    да
+2026-11-25 18:57:59   троек вхождений (сумма C(n,3))   3872336 / 3872336    да
+2026-11-25 18:57:59   распределение числа навыков      по всем n            да
+2026-11-25 18:57:59   таблица k1: строк 9219 / 9219, расхождений 0
+2026-11-25 18:57:59   таблица k2: строк 157717 / 157717, расхождений 0
+2026-11-25 18:58:00 топ-10 пар навыков:
+2026-11-25 18:58:00    1. BPMN + UML: 3880
+2026-11-25 18:58:00    2. BPMN + SQL: 2966
+2026-11-25 18:58:00    3. SQL + UML: 2681
+2026-11-25 18:58:00    4. Python + SQL: 2671
+2026-11-25 18:58:00    5. Анализ данных + Аналитическое мышление: 2507
+2026-11-25 18:58:00    6. SQL + Системный анализ: 2442
+2026-11-25 18:58:00    7. BPMN + Системный анализ: 2238
+2026-11-25 18:58:00    8. Аналитическое мышление + Работа с большим объемом информации: 2236
+2026-11-25 18:58:00    9. UML + Системный анализ: 2055
+2026-11-25 18:58:00   10. SQL + Аналитическое мышление: 2050
+2026-11-25 18:58:00 топ-10 совпадает с ДЗ 3: да
+2026-11-25 18:58:00 сверка с ДЗ 3: ВСЁ СОВПАЛО
+2026-11-25 18:58:01 результат записан в s3://hh-lake/k8s/result/ за 3.29 с
+2026-11-25 18:58:01 PEAK_RSS_MB=209.0
+2026-11-25 18:58:01 CGROUP_PEAK_MB=209.4 (память контейнера вместе со страничным кэшем)
+
+$ kubectl -n hw5 get jobs
+NAME             STATUS     COMPLETIONS   DURATION   AGE
+s3-upload        Complete   1/1           8s         27s
+skills-fit       Complete   1/1           6s         13m
+skills-measure   Complete   1/1           7s         13m
+skills-merge     Complete   1/1           7s         7s
+skills-oom       Failed     0/1           13m        13m
+skills-parts     Complete   4/4           11s        19s
+
+===== 2026-11-25 21:58:04 шаг 3 готов =====

@@ -1,0 +1,170 @@
+LAST SEEN   TYPE      REASON                  OBJECT                                 MESSAGE
+15m         Normal    Scheduled               pod/skills-oom-7xpkk                   Successfully assigned hw5/skills-oom-7xpkk to hw5-control-plane
+15m         Normal    SuccessfulCreate        job/skills-oom                         Created pod: skills-oom-7xpkk
+15m         Normal    Pulled                  pod/skills-oom-7xpkk                   Container image "skills:1.0" already present on machine and can be accessed by the pod
+15m         Normal    Started                 pod/skills-oom-7xpkk                   Container started
+15m         Normal    Created                 pod/skills-oom-7xpkk                   Container created
+15m         Normal    SuccessfulCreate        job/skills-measure                     Created pod: skills-measure-x7792
+15m         Warning   BackoffLimitExceeded    job/skills-oom                         Job has reached the specified backoff limit
+15m         Normal    Scheduled               pod/skills-measure-x7792               Successfully assigned hw5/skills-measure-x7792 to hw5-control-plane
+15m         Normal    Started                 pod/skills-measure-x7792               Container started
+15m         Normal    Created                 pod/skills-measure-x7792               Container created
+15m         Normal    Pulled                  pod/skills-measure-x7792               Container image "skills:1.0" already present on machine and can be accessed by the pod
+15m         Normal    Completed               job/skills-measure                     Job completed
+15m         Normal    Scheduled               pod/skills-fit-s2hs4                   Successfully assigned hw5/skills-fit-s2hs4 to hw5-control-plane
+15m         Normal    SuccessfulCreate        job/skills-fit                         Created pod: skills-fit-s2hs4
+15m         Normal    Started                 pod/skills-fit-s2hs4                   Container started
+15m         Normal    Created                 pod/skills-fit-s2hs4                   Container created
+15m         Normal    Pulled                  pod/skills-fit-s2hs4                   Container image "skills:1.0" already present on machine and can be accessed by the pod
+15m         Normal    Completed               job/skills-fit                         Job completed
+14m         Normal    ExternalProvisioning    persistentvolumeclaim/disk2-rustfs-0   Waiting for a volume to be created either by the external provisioner 'rancher.io/local-path' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+14m         Normal    WaitForFirstConsumer    persistentvolumeclaim/disk3-rustfs-0   waiting for first consumer to be created before binding
+14m         Normal    WaitForFirstConsumer    persistentvolumeclaim/disk2-rustfs-0   waiting for first consumer to be created before binding
+14m         Normal    SuccessfulCreate        statefulset/rustfs                     Create Claim disk3-rustfs-0 Pod rustfs-0 in StatefulSet rustfs success
+14m         Normal    SuccessfulCreate        statefulset/rustfs                     Create Claim disk2-rustfs-0 Pod rustfs-0 in StatefulSet rustfs success
+14m         Normal    SuccessfulCreate        statefulset/rustfs                     Create Claim disk1-rustfs-0 Pod rustfs-0 in StatefulSet rustfs success
+14m         Normal    SuccessfulCreate        statefulset/rustfs                     Create Claim disk0-rustfs-0 Pod rustfs-0 in StatefulSet rustfs success
+14m         Normal    Provisioning            persistentvolumeclaim/disk3-rustfs-0   External provisioner is provisioning volume for claim "hw5/disk3-rustfs-0"
+14m         Normal    WaitForFirstConsumer    persistentvolumeclaim/disk1-rustfs-0   waiting for first consumer to be created before binding
+14m         Normal    Provisioning            persistentvolumeclaim/disk0-rustfs-0   External provisioner is provisioning volume for claim "hw5/disk0-rustfs-0"
+14m         Normal    ExternalProvisioning    persistentvolumeclaim/disk3-rustfs-0   Waiting for a volume to be created either by the external provisioner 'rancher.io/local-path' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+14m         Normal    ExternalProvisioning    persistentvolumeclaim/disk1-rustfs-0   Waiting for a volume to be created either by the external provisioner 'rancher.io/local-path' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+14m         Normal    ExternalProvisioning    persistentvolumeclaim/disk0-rustfs-0   Waiting for a volume to be created either by the external provisioner 'rancher.io/local-path' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+14m         Normal    Provisioning            persistentvolumeclaim/disk2-rustfs-0   External provisioner is provisioning volume for claim "hw5/disk2-rustfs-0"
+14m         Normal    WaitForFirstConsumer    persistentvolumeclaim/disk0-rustfs-0   waiting for first consumer to be created before binding
+14m         Normal    Provisioning            persistentvolumeclaim/disk1-rustfs-0   External provisioner is provisioning volume for claim "hw5/disk1-rustfs-0"
+14m         Normal    ProvisioningSucceeded   persistentvolumeclaim/disk1-rustfs-0   Successfully provisioned volume pvc-cc98a8a7-fc0b-4889-b357-5b2185a16a7f
+14m         Normal    ProvisioningSucceeded   persistentvolumeclaim/disk2-rustfs-0   Successfully provisioned volume pvc-a5b55b99-ec71-48a3-b1e2-d2ff698c7065
+14m         Normal    ProvisioningSucceeded   persistentvolumeclaim/disk3-rustfs-0   Successfully provisioned volume pvc-c7374959-ea19-45b0-a4f1-38eca3150e96
+14m         Normal    ProvisioningSucceeded   persistentvolumeclaim/disk0-rustfs-0   Successfully provisioned volume pvc-f2e6b94d-fb26-4e66-b34f-5926e4520ab6
+14m         Normal    Scheduled               pod/rustfs-0                           Successfully assigned hw5/rustfs-0 to hw5-control-plane
+14m         Normal    Pulling                 pod/rustfs-0                           Pulling image "rustfs/rustfs:latest"
+13m         Normal    Pulled                  pod/rustfs-0                           Successfully pulled image "rustfs/rustfs:latest" in 1m26.644s (1m26.644s including waiting). Image size: 129490865 bytes.
+9m40s       Normal    Scheduled               pod/s3-upload-zzx56                    Successfully assigned hw5/s3-upload-zzx56 to hw5-control-plane
+9m40s       Normal    SuccessfulCreate        job/s3-upload                          Created pod: s3-upload-zzx56
+9m39s       Normal    Started                 pod/s3-upload-zzx56                    Container started
+9m39s       Normal    Created                 pod/s3-upload-zzx56                    Container created
+9m39s       Normal    Pulled                  pod/s3-upload-zzx56                    Container image "skills:1.0" already present on machine and can be accessed by the pod
+8m59s       Normal    Started                 pod/s3-upload-cdg6n                    Container started
+8m59s       Normal    Created                 pod/s3-upload-cdg6n                    Container created
+8m59s       Normal    Pulled                  pod/s3-upload-cdg6n                    Container image "skills:1.0" already present on machine and can be accessed by the pod
+8m59s       Normal    Scheduled               pod/s3-upload-cdg6n                    Successfully assigned hw5/s3-upload-cdg6n to hw5-control-plane
+8m59s       Normal    SuccessfulCreate        job/s3-upload                          Created pod: s3-upload-cdg6n
+8m13s       Normal    SuccessfulCreate        job/s3-upload                          Created pod: s3-upload-jwx7k
+8m13s       Normal    Started                 pod/s3-upload-jwx7k                    Container started
+8m13s       Normal    Created                 pod/s3-upload-jwx7k                    Container created
+8m13s       Normal    Pulled                  pod/s3-upload-jwx7k                    Container image "skills:1.0" already present on machine and can be accessed by the pod
+8m13s       Normal    Scheduled               pod/s3-upload-jwx7k                    Successfully assigned hw5/s3-upload-jwx7k to hw5-control-plane
+7m26s       Normal    Started                 pod/rustfs-0                           Container started
+7m26s       Normal    Pulled                  pod/rustfs-0                           Container image "rustfs/rustfs:latest" already present on machine and can be accessed by the pod
+7m26s       Normal    Created                 pod/rustfs-0                           Container created
+7m          Normal    Scheduled               pod/s3-upload-9627z                    Successfully assigned hw5/s3-upload-9627z to hw5-control-plane
+7m          Normal    SuccessfulCreate        job/s3-upload                          Created pod: s3-upload-9627z
+7m          Normal    Started                 pod/s3-upload-9627z                    Container started
+7m          Normal    Created                 pod/s3-upload-9627z                    Container created
+7m          Normal    Pulled                  pod/s3-upload-9627z                    Container image "skills:1.0" already present on machine and can be accessed by the pod
+6m17s       Warning   BackoffLimitExceeded    job/s3-upload                          Job has reached the specified backoff limit
+4m39s       Normal    Scheduled               pod/skills-parts-3-zzzdz               Successfully assigned hw5/skills-parts-3-zzzdz to hw5-control-plane
+4m39s       Normal    Scheduled               pod/skills-parts-1-z97tc               Successfully assigned hw5/skills-parts-1-z97tc to hw5-control-plane
+4m39s       Normal    SuccessfulCreate        job/skills-parts                       Created pod: skills-parts-2-g6plm
+4m39s       Normal    Scheduled               pod/skills-parts-2-g6plm               Successfully assigned hw5/skills-parts-2-g6plm to hw5-control-plane
+4m39s       Normal    SuccessfulCreate        job/skills-parts                       Created pod: skills-parts-0-cljnx
+4m39s       Normal    SuccessfulCreate        job/skills-parts                       Created pod: skills-parts-1-z97tc
+4m39s       Normal    SuccessfulCreate        job/skills-parts                       Created pod: skills-parts-3-zzzdz
+4m39s       Normal    Scheduled               pod/skills-parts-0-cljnx               Successfully assigned hw5/skills-parts-0-cljnx to hw5-control-plane
+4m38s       Normal    Created                 pod/skills-parts-0-cljnx               Container created
+4m38s       Normal    Pulled                  pod/skills-parts-1-z97tc               Container image "skills:1.0" already present on machine and can be accessed by the pod
+4m38s       Normal    Pulled                  pod/skills-parts-0-cljnx               Container image "skills:1.0" already present on machine and can be accessed by the pod
+4m38s       Normal    Pulled                  pod/skills-parts-2-g6plm               Container image "skills:1.0" already present on machine and can be accessed by the pod
+4m38s       Normal    Created                 pod/skills-parts-1-z97tc               Container created
+4m38s       Normal    Pulled                  pod/skills-parts-3-zzzdz               Container image "skills:1.0" already present on machine and can be accessed by the pod
+4m38s       Normal    Started                 pod/skills-parts-3-zzzdz               Container started
+4m38s       Normal    Started                 pod/skills-parts-0-cljnx               Container started
+4m38s       Normal    Started                 pod/skills-parts-2-g6plm               Container started
+4m38s       Normal    Started                 pod/skills-parts-1-z97tc               Container started
+4m38s       Normal    Created                 pod/skills-parts-2-g6plm               Container created
+4m38s       Normal    Created                 pod/skills-parts-3-zzzdz               Container created
+3m46s       Warning   BackOff                 pod/rustfs-0                           Back-off restarting failed container rustfs in pod rustfs-0_hw5(57807a15-97e6-4613-be75-1eb966bda54f)
+3m24s       Normal    Scheduled               pod/skills-merge-9d72l                 Successfully assigned hw5/skills-merge-9d72l to hw5-control-plane
+3m24s       Normal    SuccessfulCreate        job/skills-merge                       Created pod: skills-merge-9d72l
+3m23s       Normal    Started                 pod/skills-merge-9d72l                 Container started
+3m23s       Normal    Created                 pod/skills-merge-9d72l                 Container created
+3m23s       Normal    Pulled                  pod/skills-merge-9d72l                 Container image "skills:1.0" already present on machine and can be accessed by the pod
+2m55s       Normal    SuccessfulCreate        job/skills-merge                       Created pod: skills-merge-bcq9f
+2m55s       Normal    Started                 pod/skills-merge-bcq9f                 Container started
+2m55s       Normal    Created                 pod/skills-merge-bcq9f                 Container created
+2m55s       Normal    Pulled                  pod/skills-merge-bcq9f                 Container image "skills:1.0" already present on machine and can be accessed by the pod
+2m55s       Normal    Scheduled               pod/skills-merge-bcq9f                 Successfully assigned hw5/skills-merge-bcq9f to hw5-control-plane
+2m49s       Normal    Killing                 pod/skills-merge-bcq9f                 Stopping container merge
+2m47s       Normal    Created                 pod/rustfs-0                           Container created
+2m47s       Normal    Started                 pod/rustfs-0                           Container started
+2m47s       Normal    Pulled                  pod/rustfs-0                           Container image "rustfs/rustfs:latest" already present on machine and can be accessed by the pod
+2m47s       Normal    Scheduled               pod/rustfs-0                           Successfully assigned hw5/rustfs-0 to hw5-control-plane
+2m47s       Normal    SuccessfulCreate        statefulset/rustfs                     Create Pod rustfs-0 in StatefulSet rustfs successful
+2m38s       Normal    Scheduled               pod/s3-upload-bd22v                    Successfully assigned hw5/s3-upload-bd22v to hw5-control-plane
+2m38s       Normal    SuccessfulCreate        job/s3-upload                          Created pod: s3-upload-bd22v
+2m37s       Normal    Created                 pod/s3-upload-bd22v                    Container created
+2m37s       Normal    Started                 pod/s3-upload-bd22v                    Container started
+2m37s       Normal    Pulled                  pod/s3-upload-bd22v                    Container image "skills:1.0" already present on machine and can be accessed by the pod
+2m30s       Normal    Completed               job/s3-upload                          Job completed
+2m30s       Normal    Scheduled               pod/skills-parts-0-92w2w               Successfully assigned hw5/skills-parts-0-92w2w to hw5-control-plane
+2m30s       Normal    SuccessfulCreate        job/skills-parts                       Created pod: skills-parts-1-q5c8c
+2m30s       Normal    SuccessfulCreate        job/skills-parts                       Created pod: skills-parts-2-5bfxr
+2m30s       Normal    SuccessfulCreate        job/skills-parts                       Created pod: skills-parts-0-92w2w
+2m30s       Normal    SuccessfulCreate        job/skills-parts                       Created pod: skills-parts-3-b26dr
+2m30s       Normal    Scheduled               pod/skills-parts-1-q5c8c               Successfully assigned hw5/skills-parts-1-q5c8c to hw5-control-plane
+2m30s       Normal    Scheduled               pod/skills-parts-2-5bfxr               Successfully assigned hw5/skills-parts-2-5bfxr to hw5-control-plane
+2m30s       Normal    Scheduled               pod/skills-parts-3-b26dr               Successfully assigned hw5/skills-parts-3-b26dr to hw5-control-plane
+2m29s       Normal    Pulled                  pod/skills-parts-1-q5c8c               Container image "skills:1.0" already present on machine and can be accessed by the pod
+2m29s       Normal    Pulled                  pod/skills-parts-3-b26dr               Container image "skills:1.0" already present on machine and can be accessed by the pod
+2m29s       Normal    Pulled                  pod/skills-parts-0-92w2w               Container image "skills:1.0" already present on machine and can be accessed by the pod
+2m29s       Normal    Pulled                  pod/skills-parts-2-5bfxr               Container image "skills:1.0" already present on machine and can be accessed by the pod
+2m28s       Normal    Created                 pod/skills-parts-2-5bfxr               Container created
+2m28s       Normal    Started                 pod/skills-parts-0-92w2w               Container started
+2m28s       Normal    Started                 pod/skills-parts-1-q5c8c               Container started
+2m28s       Normal    Created                 pod/skills-parts-1-q5c8c               Container created
+2m28s       Normal    Started                 pod/skills-parts-2-5bfxr               Container started
+2m28s       Normal    Created                 pod/skills-parts-0-92w2w               Container created
+2m28s       Normal    Started                 pod/skills-parts-3-b26dr               Container started
+2m28s       Normal    Created                 pod/skills-parts-3-b26dr               Container created
+2m19s       Normal    Completed               job/skills-parts                       Job completed
+2m18s       Normal    Scheduled               pod/skills-merge-lw7nq                 Successfully assigned hw5/skills-merge-lw7nq to hw5-control-plane
+2m18s       Normal    Started                 pod/skills-merge-lw7nq                 Container started
+2m18s       Normal    SuccessfulCreate        job/skills-merge                       Created pod: skills-merge-lw7nq
+2m18s       Normal    Created                 pod/skills-merge-lw7nq                 Container created
+2m18s       Normal    Pulled                  pod/skills-merge-lw7nq                 Container image "skills:1.0" already present on machine and can be accessed by the pod
+2m11s       Normal    Completed               job/skills-merge                       Job completed
+78s         Normal    SuccessfulCreate        job/cpu-waiter                         Created pod: cpu-waiter-hc9jl
+78s         Normal    Scheduled               pod/cpu-low-8gn5k                      Successfully assigned hw5/cpu-low-8gn5k to hw5-control-plane
+78s         Normal    Pulled                  pod/cpu-low-8gn5k                      Container image "skills:1.0" already present on machine and can be accessed by the pod
+78s         Normal    SuccessfulCreate        job/cpu-low                            Created pod: cpu-low-8gn5k
+78s         Warning   FailedScheduling        pod/cpu-waiter-hc9jl                   0/1 nodes are available: 1 Insufficient cpu. preemption: not eligible due to preemptionPolicy=Never.
+78s         Normal    Created                 pod/cpu-low-8gn5k                      Container created
+78s         Normal    Started                 pod/cpu-low-8gn5k                      Container started
+67s         Normal    Killing                 pod/cpu-low-8gn5k                      Stopping container work
+65s         Normal    Started                 pod/cpu-waiter-hc9jl                   Container started
+65s         Normal    Scheduled               pod/cpu-waiter-hc9jl                   Successfully assigned hw5/cpu-waiter-hc9jl to hw5-control-plane
+65s         Normal    Pulled                  pod/cpu-waiter-hc9jl                   Container image "skills:1.0" already present on machine and can be accessed by the pod
+65s         Normal    Created                 pod/cpu-waiter-hc9jl                   Container created
+64s         Warning   FailedScheduling        pod/cpu-low-z297f                      0/1 nodes are available: 1 Insufficient cpu. preemption: not eligible due to preemptionPolicy=Never.
+64s         Normal    SuccessfulCreate        job/cpu-low                            Created pod: cpu-low-z297f
+64s         Normal    Killing                 pod/cpu-waiter-hc9jl                   Stopping container work
+62s         Normal    Scheduled               pod/cpu-low-z297f                      Successfully assigned hw5/cpu-low-z297f to hw5-control-plane
+61s         Normal    Created                 pod/cpu-low-z297f                      Container created
+61s         Warning   FailedScheduling        pod/cpu-high-t5h5p                     0/1 nodes are available: 1 Insufficient cpu. preemption: found a potential placement for pod on node hw5-control-plane, preempting 1 victims
+61s         Normal    Started                 pod/cpu-low-z297f                      Container started
+61s         Normal    Pulled                  pod/cpu-low-z297f                      Container image "skills:1.0" already present on machine and can be accessed by the pod
+61s         Normal    Preempted               pod/cpu-low-z297f                      Preempted by pod 0115df84-5fd2-4557-8813-39087d901fa5 on node hw5-control-plane
+61s         Normal    Killing                 pod/cpu-low-z297f                      Stopping container work
+61s         Normal    SuccessfulCreate        job/cpu-high                           Created pod: cpu-high-t5h5p
+59s         Normal    Scheduled               pod/cpu-high-t5h5p                     Successfully assigned hw5/cpu-high-t5h5p to hw5-control-plane
+58s         Normal    Started                 pod/cpu-high-t5h5p                     Container started
+58s         Normal    Created                 pod/cpu-high-t5h5p                     Container created
+58s         Normal    Pulled                  pod/cpu-high-t5h5p                     Container image "skills:1.0" already present on machine and can be accessed by the pod
+51s         Normal    SuccessfulCreate        job/cpu-low                            Created pod: cpu-low-6z69j
+51s         Warning   FailedScheduling        pod/cpu-low-6z69j                      0/1 nodes are available: 1 Insufficient cpu. preemption: not eligible due to preemptionPolicy=Never.
+11s         Normal    Started                 pod/cpu-low-6z69j                      Container started
+11s         Normal    Created                 pod/cpu-low-6z69j                      Container created
+11s         Normal    Pulled                  pod/cpu-low-6z69j                      Container image "skills:1.0" already present on machine and can be accessed by the pod
+11s         Normal    Scheduled               pod/cpu-low-6z69j                      Successfully assigned hw5/cpu-low-6z69j to hw5-control-plane
+10s         Normal    Completed               job/cpu-high                           Job completed

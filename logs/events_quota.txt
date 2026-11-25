@@ -1,0 +1,31 @@
+LAST SEEN   TYPE      REASON             OBJECT                           MESSAGE
+29s         Warning   FailedCreate       job/big-request                  Error creating: pods "big-request-rxvh2" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=2, used: requests.cpu=0, limited: requests.cpu=1
+28s         Warning   FailedCreate       job/big-request                  Error creating: pods "big-request-hn7w6" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=2, used: requests.cpu=0, limited: requests.cpu=1
+26s         Warning   FailedCreate       job/big-request                  Error creating: pods "big-request-pvvrs" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=2, used: requests.cpu=0, limited: requests.cpu=1
+22s         Warning   FailedCreate       job/big-request                  Error creating: pods "big-request-6wwql" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=2, used: requests.cpu=0, limited: requests.cpu=1
+21s         Normal    SuccessfulCreate   job/skills-parts-quota           Created pod: skills-parts-quota-0-lbpnz
+21s         Normal    Scheduled          pod/skills-parts-quota-0-lbpnz   Successfully assigned hw5-quota/skills-parts-quota-0-lbpnz to hw5-control-plane
+21s         Normal    SuccessfulCreate   job/skills-parts-quota           Created pod: skills-parts-quota-1-g98t2
+21s         Warning   FailedCreate       job/skills-parts-quota           Error creating: pods "skills-parts-quota-2-2cxr4" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+21s         Normal    Scheduled          pod/skills-parts-quota-1-g98t2   Successfully assigned hw5-quota/skills-parts-quota-1-g98t2 to hw5-control-plane
+20s         Normal    Started            pod/skills-parts-quota-0-lbpnz   Container started
+20s         Normal    Pulled             pod/skills-parts-quota-1-g98t2   Container image "skills:1.0" already present on machine and can be accessed by the pod
+20s         Normal    Started            pod/skills-parts-quota-1-g98t2   Container started
+20s         Normal    Created            pod/skills-parts-quota-1-g98t2   Container created
+20s         Warning   FailedCreate       job/skills-parts-quota           Error creating: pods "skills-parts-quota-2-gxvk5" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+20s         Normal    Pulled             pod/skills-parts-quota-0-lbpnz   Container image "skills:1.0" already present on machine and can be accessed by the pod
+20s         Normal    Created            pod/skills-parts-quota-0-lbpnz   Container created
+19s         Warning   FailedCreate       job/skills-parts-quota           Error creating: pods "skills-parts-quota-2-zpbdl" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+15s         Warning   FailedCreate       job/skills-parts-quota           Error creating: pods "skills-parts-quota-2-wbskh" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+12s         Warning   FailedCreate       job/skills-parts-quota           Error creating: pods "skills-parts-quota-2-hcv9q" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+11s         Normal    Scheduled          pod/skills-parts-quota-3-8jc62   Successfully assigned hw5-quota/skills-parts-quota-3-8jc62 to hw5-control-plane
+11s         Normal    Scheduled          pod/skills-parts-quota-2-zsnww   Successfully assigned hw5-quota/skills-parts-quota-2-zsnww to hw5-control-plane
+11s         Normal    SuccessfulCreate   job/skills-parts-quota           Created pod: skills-parts-quota-2-zsnww
+11s         Normal    SuccessfulCreate   job/skills-parts-quota           Created pod: skills-parts-quota-3-8jc62
+10s         Normal    Created            pod/skills-parts-quota-3-8jc62   Container created
+10s         Normal    Started            pod/skills-parts-quota-3-8jc62   Container started
+10s         Normal    Pulled             pod/skills-parts-quota-3-8jc62   Container image "skills:1.0" already present on machine and can be accessed by the pod
+10s         Normal    Started            pod/skills-parts-quota-2-zsnww   Container started
+10s         Normal    Created            pod/skills-parts-quota-2-zsnww   Container created
+10s         Normal    Pulled             pod/skills-parts-quota-2-zsnww   Container image "skills:1.0" already present on machine and can be accessed by the pod
+4s          Normal    Completed          job/skills-parts-quota           Job completed

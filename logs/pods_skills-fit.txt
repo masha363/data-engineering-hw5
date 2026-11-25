@@ -1,0 +1,2 @@
+NAME               READY   STATUS      RESTARTS   AGE   IP           NODE                NOMINATED NODE   READINESS GATES
+skills-fit-s2hs4   0/1     Completed   0          6s    10.244.0.7   hw5-control-plane   <none>           <none>

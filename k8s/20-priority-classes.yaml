@@ -1,0 +1,15 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: hw5-low
+value: -100
+preemptionPolicy: Never
+description: "низкий приоритет: фоновые задачи, ниже всех системных подов (у них 0 и выше)"
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: hw5-high
+value: 100000
+preemptionPolicy: PreemptLowerPriority
+description: "высокий приоритет: срочные задачи, могут вытеснять низкий"

@@ -1,0 +1,51 @@
+Name:             skills-oom
+Namespace:        hw5
+Selector:         batch.kubernetes.io/controller-uid=b8c154df-0a59-4493-9df4-33503e14698c
+Labels:           batch.kubernetes.io/controller-uid=b8c154df-0a59-4493-9df4-33503e14698c
+                  batch.kubernetes.io/job-name=skills-oom
+                  controller-uid=b8c154df-0a59-4493-9df4-33503e14698c
+                  job-name=skills-oom
+Annotations:      <none>
+Parallelism:      1
+Completions:      1
+Completion Mode:  NonIndexed
+Suspend:          false
+Backoff Limit:    0
+Start Time:       Wed, 25 Nov 2026 21:44:51 +0300
+Pods Statuses:    0 Active (0 Ready) / 0 Succeeded / 1 Failed
+Pod Template:
+  Labels:  batch.kubernetes.io/controller-uid=b8c154df-0a59-4493-9df4-33503e14698c
+           batch.kubernetes.io/job-name=skills-oom
+           controller-uid=b8c154df-0a59-4493-9df4-33503e14698c
+           job-name=skills-oom
+  Containers:
+   skills:
+    Image:      skills:1.0
+    Port:       <none>
+    Host Port:  <none>
+    Args:
+      python
+      skills.py
+      local
+      /data/hh_analysts_2024.csv
+    Limits:
+      cpu:     1
+      memory:  64Mi
+    Requests:
+      cpu:        500m
+      memory:     64Mi
+    Environment:  <none>
+    Mounts:
+      /data from data (ro)
+  Volumes:
+   data:
+    Type:          HostPath (bare host directory volume)
+    Path:          /hostdata
+    HostPathType:  Directory
+  Node-Selectors:  <none>
+  Tolerations:     <none>
+Events:
+  Type     Reason                Age   From            Message
+  ----     ------                ----  ----            -------
+  Normal   SuccessfulCreate      6s    job-controller  Created pod: skills-oom-7xpkk
+  Warning  BackoffLimitExceeded  0s    job-controller  Job has reached the specified backoff limit

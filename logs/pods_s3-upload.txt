@@ -1,0 +1,2 @@
+NAME              READY   STATUS      RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+s3-upload-bd22v   0/1     Completed   0          8s    10.244.0.24   hw5-control-plane   <none>           <none>

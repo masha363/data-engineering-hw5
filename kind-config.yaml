@@ -1,0 +1,9 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+name: hw5
+nodes:
+  - role: control-plane
+    extraMounts:
+      - hostPath: /Users/golubevamaria/k8s-lab/data
+        containerPath: /hostdata
+        readOnly: true

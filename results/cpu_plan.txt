@@ -1,0 +1,1 @@
+alloc_m=8000 used_m=1200 free_m=6800 hog_m=6300 big_m=1500

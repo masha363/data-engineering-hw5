@@ -1,0 +1,61 @@
+Name:               skills-parts-quota
+Namespace:          hw5-quota
+Selector:           batch.kubernetes.io/controller-uid=ea710b14-53d9-48c8-a88b-ac28bee49ab6
+Labels:             batch.kubernetes.io/controller-uid=ea710b14-53d9-48c8-a88b-ac28bee49ab6
+                    batch.kubernetes.io/job-name=skills-parts-quota
+                    controller-uid=ea710b14-53d9-48c8-a88b-ac28bee49ab6
+                    job-name=skills-parts-quota
+Annotations:        <none>
+Parallelism:        4
+Completions:        4
+Completion Mode:    Indexed
+Suspend:            false
+Backoff Limit:      4
+Start Time:         Wed, 25 Nov 2026 22:02:11 +0300
+Completed At:       Wed, 25 Nov 2026 22:02:28 +0300
+Duration:           17s
+Pods Statuses:      0 Active (0 Ready) / 4 Succeeded / 0 Failed
+Completed Indexes:  0-3
+Pod Template:
+  Labels:  batch.kubernetes.io/controller-uid=ea710b14-53d9-48c8-a88b-ac28bee49ab6
+           batch.kubernetes.io/job-name=skills-parts-quota
+           controller-uid=ea710b14-53d9-48c8-a88b-ac28bee49ab6
+           job-name=skills-parts-quota
+  Containers:
+   part:
+    Image:      skills:1.0
+    Port:       <none>
+    Host Port:  <none>
+    Args:
+      python
+      skills.py
+      part
+    Limits:
+      cpu:     500m
+      memory:  640Mi
+    Requests:
+      cpu:     400m
+      memory:  256Mi
+    Environment:
+      PARTS:          4
+      RUN:            k8s-quota
+      S3_ENDPOINT:    http://rustfs.hw5.svc.cluster.local:9000
+      S3_ACCESS_KEY:  <set to the key 'access-key' in secret 's3-credentials'>  Optional: false
+      S3_SECRET_KEY:  <set to the key 'secret-key' in secret 's3-credentials'>  Optional: false
+    Mounts:           <none>
+  Volumes:            <none>
+  Node-Selectors:     <none>
+  Tolerations:        <none>
+Events:
+  Type     Reason            Age   From            Message
+  ----     ------            ----  ----            -------
+  Normal   SuccessfulCreate  21s   job-controller  Created pod: skills-parts-quota-0-lbpnz
+  Warning  FailedCreate      21s   job-controller  Error creating: pods "skills-parts-quota-2-2cxr4" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+  Normal   SuccessfulCreate  21s   job-controller  Created pod: skills-parts-quota-1-g98t2
+  Warning  FailedCreate      20s   job-controller  Error creating: pods "skills-parts-quota-2-gxvk5" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+  Warning  FailedCreate      19s   job-controller  Error creating: pods "skills-parts-quota-2-zpbdl" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+  Warning  FailedCreate      15s   job-controller  Error creating: pods "skills-parts-quota-2-wbskh" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+  Warning  FailedCreate      12s   job-controller  Error creating: pods "skills-parts-quota-2-hcv9q" is forbidden: exceeded quota: hw5-quota, requested: requests.cpu=400m, used: requests.cpu=800m, limited: requests.cpu=1
+  Normal   SuccessfulCreate  11s   job-controller  Created pod: skills-parts-quota-2-zsnww
+  Normal   SuccessfulCreate  11s   job-controller  Created pod: skills-parts-quota-3-8jc62
+  Normal   Completed         4s    job-controller  Job completed

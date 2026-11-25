@@ -1,0 +1,2 @@
+NAME                       READY   STATUS      RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+skills-merge-quota-rv2xb   0/1     Completed   0          10s   10.244.0.39   hw5-control-plane   <none>           <none>

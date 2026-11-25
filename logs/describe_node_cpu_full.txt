@@ -1,0 +1,92 @@
+Name:               hw5-control-plane
+Roles:              control-plane
+Labels:             beta.kubernetes.io/arch=arm64
+                    beta.kubernetes.io/os=linux
+                    kubernetes.io/arch=arm64
+                    kubernetes.io/hostname=hw5-control-plane
+                    kubernetes.io/os=linux
+                    node-role.kubernetes.io/control-plane=
+Annotations:        node.alpha.kubernetes.io/ttl: 0
+                    volumes.kubernetes.io/controller-managed-attach-detach: true
+CreationTimestamp:  Wed, 25 Nov 2026 21:41:32 +0300
+Taints:             <none>
+Unschedulable:      false
+Lease:
+  HolderIdentity:  hw5-control-plane
+  AcquireTime:     <unset>
+  RenewTime:       Wed, 25 Nov 2026 21:59:07 +0300
+Conditions:
+  Type             Status  LastHeartbeatTime                 LastTransitionTime                Reason                       Message
+  ----             ------  -----------------                 ------------------                ------                       -------
+  MemoryPressure   False   Wed, 25 Nov 2026 21:56:44 +0300   Wed, 25 Nov 2026 21:41:31 +0300   KubeletHasSufficientMemory   kubelet has sufficient memory available
+  DiskPressure     False   Wed, 25 Nov 2026 21:56:44 +0300   Wed, 25 Nov 2026 21:41:31 +0300   KubeletHasNoDiskPressure     kubelet has no disk pressure
+  PIDPressure      False   Wed, 25 Nov 2026 21:56:44 +0300   Wed, 25 Nov 2026 21:41:31 +0300   KubeletHasSufficientPID      kubelet has sufficient PID available
+  Ready            True    Wed, 25 Nov 2026 21:56:44 +0300   Wed, 25 Nov 2026 21:41:54 +0300   KubeletReady                 kubelet is posting ready status
+Addresses:
+  InternalIP:  172.22.0.2
+  Hostname:    hw5-control-plane
+Capacity:
+  cpu:                8
+  ephemeral-storage:  240120725504
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  hugepages-32Mi:     0
+  hugepages-64Ki:     0
+  memory:             4010356Ki
+  pods:               110
+Allocatable:
+  cpu:                8
+  ephemeral-storage:  240120725504
+  hugepages-1Gi:      0
+  hugepages-2Mi:      0
+  hugepages-32Mi:     0
+  hugepages-64Ki:     0
+  memory:             4010356Ki
+  pods:               110
+System Info:
+  Machine ID:                 17c676436fb9412f818229b40b750488
+  System UUID:                17c676436fb9412f818229b40b750488
+  Boot ID:                    f2fb6f22-0292-42ab-b131-15ee83f2a799
+  Kernel Version:             7.0.14-linuxkit
+  OS Image:                   Debian GNU/Linux 13 (trixie)
+  Operating System:           linux
+  Architecture:               arm64
+  Container Runtime Version:  containerd://2.3.4
+  Kubelet Version:            v1.37.0
+PodCIDR:                      10.244.0.0/24
+PodCIDRs:                     10.244.0.0/24
+ProviderID:                   kind://docker/hw5/hw5-control-plane
+Non-terminated Pods:          (11 in total)
+  Namespace                   Name                                         CPU Requests  CPU Limits  Memory Requests  Memory Limits  Age
+  ---------                   ----                                         ------------  ----------  ---------------  -------------  ---
+  hw5                         cpu-low-8gn5k                                6300m (78%)   0 (0%)      32Mi (0%)        64Mi (1%)      11s
+  hw5                         rustfs-0                                     250m (3%)     0 (0%)      256Mi (6%)       1Gi (26%)      101s
+  kube-system                 coredns-559f6c778d-fr2sw                     100m (1%)     0 (0%)      70Mi (1%)        170Mi (4%)     17m
+  kube-system                 coredns-559f6c778d-w24s9                     100m (1%)     0 (0%)      70Mi (1%)        170Mi (4%)     17m
+  kube-system                 etcd-hw5-control-plane                       100m (1%)     0 (0%)      100Mi (2%)       0 (0%)         17m
+  kube-system                 kindnet-nwm22                                100m (1%)     0 (0%)      50Mi (1%)        0 (0%)         17m
+  kube-system                 kube-apiserver-hw5-control-plane             250m (3%)     0 (0%)      0 (0%)           0 (0%)         17m
+  kube-system                 kube-controller-manager-hw5-control-plane    200m (2%)     0 (0%)      0 (0%)           0 (0%)         17m
+  kube-system                 kube-proxy-x2wzn                             0 (0%)        0 (0%)      0 (0%)           0 (0%)         17m
+  kube-system                 kube-scheduler-hw5-control-plane             100m (1%)     0 (0%)      0 (0%)           0 (0%)         17m
+  local-path-storage          local-path-provisioner-75f7fc7dc5-8vjml      0 (0%)        0 (0%)      0 (0%)           0 (0%)         17m
+Allocated resources:
+  (Total limits may be over 100 percent, i.e., overcommitted.)
+  Resource           Requests     Limits
+  --------           --------     ------
+  cpu                7500m (93%)  0 (0%)
+  memory             578Mi (14%)  1428Mi (36%)
+  ephemeral-storage  0 (0%)       0 (0%)
+  hugepages-1Gi      0 (0%)       0 (0%)
+  hugepages-2Mi      0 (0%)       0 (0%)
+  hugepages-32Mi     0 (0%)       0 (0%)
+  hugepages-64Ki     0 (0%)       0 (0%)
+Events:
+  Type    Reason                   Age   From             Message
+  ----    ------                   ----  ----             -------
+  Normal  Starting                 17m   kubelet          Starting kubelet.
+  Normal  NodeHasSufficientMemory  17m   kubelet          Node hw5-control-plane status is now: NodeHasSufficientMemory
+  Normal  NodeHasNoDiskPressure    17m   kubelet          Node hw5-control-plane status is now: NodeHasNoDiskPressure
+  Normal  NodeHasSufficientPID     17m   kubelet          Node hw5-control-plane status is now: NodeHasSufficientPID
+  Normal  RegisteredNode           17m   node-controller  Node hw5-control-plane event: Registered Node hw5-control-plane in Controller
+  Normal  NodeReady                17m   kubelet          Node hw5-control-plane status is now: NodeReady

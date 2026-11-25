@@ -1,0 +1,51 @@
+Name:             skills-merge-quota
+Namespace:        hw5-quota
+Selector:         batch.kubernetes.io/controller-uid=674a4e00-e25e-41b2-8d67-ce00f8146e24
+Labels:           batch.kubernetes.io/controller-uid=674a4e00-e25e-41b2-8d67-ce00f8146e24
+                  batch.kubernetes.io/job-name=skills-merge-quota
+                  controller-uid=674a4e00-e25e-41b2-8d67-ce00f8146e24
+                  job-name=skills-merge-quota
+Annotations:      <none>
+Parallelism:      1
+Completions:      1
+Completion Mode:  NonIndexed
+Suspend:          false
+Backoff Limit:    1
+Start Time:       Wed, 25 Nov 2026 22:02:32 +0300
+Completed At:     Wed, 25 Nov 2026 22:02:41 +0300
+Duration:         9s
+Pods Statuses:    0 Active (0 Ready) / 1 Succeeded / 0 Failed
+Pod Template:
+  Labels:  batch.kubernetes.io/controller-uid=674a4e00-e25e-41b2-8d67-ce00f8146e24
+           batch.kubernetes.io/job-name=skills-merge-quota
+           controller-uid=674a4e00-e25e-41b2-8d67-ce00f8146e24
+           job-name=skills-merge-quota
+  Containers:
+   merge:
+    Image:      skills:1.0
+    Port:       <none>
+    Host Port:  <none>
+    Args:
+      python
+      skills.py
+      merge
+    Limits:
+      cpu:     500m
+      memory:  1Gi
+    Requests:
+      cpu:     400m
+      memory:  256Mi
+    Environment:
+      RUN:            k8s-quota
+      S3_ENDPOINT:    http://rustfs.hw5.svc.cluster.local:9000
+      S3_ACCESS_KEY:  <set to the key 'access-key' in secret 's3-credentials'>  Optional: false
+      S3_SECRET_KEY:  <set to the key 'secret-key' in secret 's3-credentials'>  Optional: false
+    Mounts:           <none>
+  Volumes:            <none>
+  Node-Selectors:     <none>
+  Tolerations:        <none>
+Events:
+  Type    Reason            Age   From            Message
+  ----    ------            ----  ----            -------
+  Normal  SuccessfulCreate  10s   job-controller  Created pod: skills-merge-quota-rv2xb
+  Normal  Completed         0s    job-controller  Job completed

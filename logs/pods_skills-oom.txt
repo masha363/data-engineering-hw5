@@ -1,0 +1,2 @@
+NAME               READY   STATUS      RESTARTS   AGE   IP           NODE                NOMINATED NODE   READINESS GATES
+skills-oom-7xpkk   0/1     OOMKilled   0          6s    10.244.0.5   hw5-control-plane   <none>           <none>

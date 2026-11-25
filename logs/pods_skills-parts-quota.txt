@@ -1,0 +1,5 @@
+NAME                         READY   STATUS      RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+skills-parts-quota-0-lbpnz   0/1     Completed   0          21s   10.244.0.36   hw5-control-plane   <none>           <none>
+skills-parts-quota-1-g98t2   0/1     Completed   0          21s   10.244.0.35   hw5-control-plane   <none>           <none>
+skills-parts-quota-2-zsnww   0/1     Completed   0          11s   10.244.0.38   hw5-control-plane   <none>           <none>
+skills-parts-quota-3-8jc62   0/1     Completed   0          11s   10.244.0.37   hw5-control-plane   <none>           <none>

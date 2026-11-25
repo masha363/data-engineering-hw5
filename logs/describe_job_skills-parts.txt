@@ -1,0 +1,56 @@
+Name:               skills-parts
+Namespace:          hw5
+Selector:           batch.kubernetes.io/controller-uid=823a2ca1-679d-498c-8f31-2c44e14b79d0
+Labels:             batch.kubernetes.io/controller-uid=823a2ca1-679d-498c-8f31-2c44e14b79d0
+                    batch.kubernetes.io/job-name=skills-parts
+                    controller-uid=823a2ca1-679d-498c-8f31-2c44e14b79d0
+                    job-name=skills-parts
+Annotations:        <none>
+Parallelism:        4
+Completions:        4
+Completion Mode:    Indexed
+Suspend:            false
+Backoff Limit:      4
+Start Time:         Wed, 25 Nov 2026 21:57:45 +0300
+Completed At:       Wed, 25 Nov 2026 21:57:56 +0300
+Duration:           11s
+Pods Statuses:      0 Active (0 Ready) / 4 Succeeded / 0 Failed
+Completed Indexes:  0-3
+Pod Template:
+  Labels:  batch.kubernetes.io/controller-uid=823a2ca1-679d-498c-8f31-2c44e14b79d0
+           batch.kubernetes.io/job-name=skills-parts
+           controller-uid=823a2ca1-679d-498c-8f31-2c44e14b79d0
+           job-name=skills-parts
+  Containers:
+   part:
+    Image:      skills:1.0
+    Port:       <none>
+    Host Port:  <none>
+    Args:
+      python
+      skills.py
+      part
+    Limits:
+      cpu:     1
+      memory:  768Mi
+    Requests:
+      cpu:     500m
+      memory:  256Mi
+    Environment:
+      PARTS:          4
+      RUN:            k8s
+      S3_ENDPOINT:    http://rustfs.hw5.svc.cluster.local:9000
+      S3_ACCESS_KEY:  <set to the key 'access-key' in secret 's3-credentials'>  Optional: false
+      S3_SECRET_KEY:  <set to the key 'secret-key' in secret 's3-credentials'>  Optional: false
+    Mounts:           <none>
+  Volumes:            <none>
+  Node-Selectors:     <none>
+  Tolerations:        <none>
+Events:
+  Type    Reason            Age   From            Message
+  ----    ------            ----  ----            -------
+  Normal  SuccessfulCreate  12s   job-controller  Created pod: skills-parts-0-92w2w
+  Normal  SuccessfulCreate  12s   job-controller  Created pod: skills-parts-2-5bfxr
+  Normal  SuccessfulCreate  12s   job-controller  Created pod: skills-parts-1-q5c8c
+  Normal  SuccessfulCreate  12s   job-controller  Created pod: skills-parts-3-b26dr
+  Normal  Completed         1s    job-controller  Job completed

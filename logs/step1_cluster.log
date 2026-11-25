@@ -1,0 +1,251 @@
+
+===== 2026-11-25 21:36:56 шаг 1: кластер kind и образ =====
+
+$ docker --version
+Docker version 29.8.1, build 4a63305
+
+$ docker info --format CPUs={{.NCPU}} MemTotal={{.MemTotal}} Kernel={{.KernelVersion}} Cgroup={{.CgroupVersion}}
+CPUs=8 MemTotal=4106604544 Kernel=7.0.14-linuxkit Cgroup=2
+
+$ kind version
+kind v0.33.0 go1.27.0 darwin/arm64
+
+$ kubectl version --client
+Client Version: v1.36.1
+Kustomize Version: v5.8.1
+No kind clusters found.
+
+$ kind create cluster --config kind-config.yaml --wait 120s
+Creating cluster "hw5" ...
+ • Ensuring node image (kindest/node:v1.37.0) 🖼️  ...
+ ✓ Ensuring node image (kindest/node:v1.37.0) 🖼️
+ • Preparing nodes 📦   ...
+ ✓ Preparing nodes 📦 
+ • Writing configuration 📜  ...
+ ✓ Writing configuration 📜
+ • Starting control-plane 🕹️  ...
+ ✓ Starting control-plane 🕹️
+ • Installing CNI 🔌  ...
+ ✓ Installing CNI 🔌
+ • Installing StorageClass 💾  ...
+ ✓ Installing StorageClass 💾
+ • Waiting ≤ 2m0s for control-plane = Ready ⏳  ...
+ ✓ Waiting ≤ 2m0s for control-plane = Ready ⏳
+ • Ready after 18s 💚
+Set kubectl context to "kind-hw5"
+You can now use your cluster with:
+
+kubectl cluster-info --context kind-hw5
+
+Have a nice day! 👋
+
+$ kubectl cluster-info --context kind-hw5
+Kubernetes control plane is running at https://127.0.0.1:60783
+CoreDNS is running at https://127.0.0.1:60783/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use 'kubectl cluster-info dump'.
+
+$ kubectl config use-context kind-hw5
+Switched to context "kind-hw5".
+
+$ kubectl get nodes -o wide
+NAME                STATUS   ROLES           AGE   VERSION   INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                       KERNEL-VERSION            CONTAINER-RUNTIME
+hw5-control-plane   Ready    control-plane   23s   v1.37.0   172.22.0.2    <none>        Debian GNU/Linux 13 (trixie)   7.0.14-linuxkit (arm64)   containerd://2.3.4
+
+$ kubectl get node hw5-control-plane -o jsonpath={"allocatable: "}{.status.allocatable}{"\n"}
+allocatable: {"cpu":"8","ephemeral-storage":"240120725504","hugepages-1Gi":"0","hugepages-2Mi":"0","hugepages-32Mi":"0","hugepages-64Ki":"0","memory":"4010356Ki","pods":"110"}
+
+$ docker build --provenance=false --sbom=false -t skills:1.0 app
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 248B 0.0s done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/python:3.12-slim
+#2 DONE 2.4s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [1/6] FROM docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#4 resolve docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b 0.1s done
+#4 sha256:226fb6b313b12ce882faf519cb42d6e89f8063b552103e61753eb9573b63fd13 248B / 248B 0.3s done
+#4 sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 0B / 12.06MB 0.2s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 0B / 30.20MB 0.2s
+#4 sha256:b37b16754da2430b6225ca41d206fdf4b06d72f378fa321a86dc20ee5823f6d8 0B / 1.27MB 0.2s
+#4 ...
+
+#5 [internal] load build context
+#5 transferring context: 10.15MB 0.4s done
+#5 DONE 0.4s
+
+#4 [1/6] FROM docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#4 sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 0B / 12.06MB 5.3s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 0B / 30.20MB 5.3s
+#4 sha256:b37b16754da2430b6225ca41d206fdf4b06d72f378fa321a86dc20ee5823f6d8 0B / 1.27MB 5.3s
+#4 sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 1.05MB / 12.06MB 7.1s
+#4 sha256:b37b16754da2430b6225ca41d206fdf4b06d72f378fa321a86dc20ee5823f6d8 1.05MB / 1.27MB 9.0s
+#4 sha256:b37b16754da2430b6225ca41d206fdf4b06d72f378fa321a86dc20ee5823f6d8 1.27MB / 1.27MB 9.5s done
+#4 sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 2.10MB / 12.06MB 9.7s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 2.10MB / 30.20MB 10.2s
+#4 sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 3.15MB / 12.06MB 11.4s
+#4 sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 4.19MB / 12.06MB 12.9s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 4.19MB / 30.20MB 13.2s
+#4 sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 5.24MB / 12.06MB 14.7s
+#4 sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 6.29MB / 12.06MB 16.2s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 6.29MB / 30.20MB 16.2s
+#4 sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 7.34MB / 12.06MB 17.7s
+#4 sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 8.39MB / 12.06MB 19.3s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 8.39MB / 30.20MB 19.2s
+#4 sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 9.44MB / 12.06MB 21.0s
+#4 sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 10.49MB / 12.06MB 23.1s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 10.49MB / 30.20MB 23.1s
+#4 sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 11.53MB / 12.06MB 25.0s
+#4 sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 12.06MB / 12.06MB 26.0s done
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 12.58MB / 30.20MB 26.2s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 14.68MB / 30.20MB 28.2s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 16.78MB / 30.20MB 29.5s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 18.87MB / 30.20MB 30.9s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 20.97MB / 30.20MB 32.4s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 23.07MB / 30.20MB 34.2s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 25.17MB / 30.20MB 35.4s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 27.26MB / 30.20MB 36.7s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 29.36MB / 30.20MB 38.2s
+#4 sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 30.20MB / 30.20MB 38.7s done
+#4 extracting sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6
+#4 extracting sha256:48fb00926fe468d83ca04ee6775f36350d17e0f328dfcb03aadb5de0c52ae3f6 1.4s done
+#4 DONE 40.4s
+
+#4 [1/6] FROM docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#4 extracting sha256:b37b16754da2430b6225ca41d206fdf4b06d72f378fa321a86dc20ee5823f6d8 0.1s done
+#4 DONE 40.5s
+
+#4 [1/6] FROM docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#4 extracting sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106
+#4 extracting sha256:cb82b968e30a0eaf3f0c3a4e1a996dacd981119f68d33d1febff34c1122fb106 0.5s done
+#4 DONE 41.0s
+
+#4 [1/6] FROM docker.io/library/python:3.12-slim@sha256:191083cdf6c7bda8c76158983163ead5d5cf7b77cf3033e805bb0f5296f51b4b
+#4 extracting sha256:226fb6b313b12ce882faf519cb42d6e89f8063b552103e61753eb9573b63fd13 done
+#4 DONE 41.0s
+
+#6 [2/6] WORKDIR /app
+#6 DONE 0.4s
+
+#7 [3/6] COPY requirements.txt .
+#7 DONE 0.0s
+
+#8 [4/6] RUN pip install --no-cache-dir -r requirements.txt
+#8 7.560 Collecting boto3 (from -r requirements.txt (line 1))
+#8 13.51   Downloading boto3-1.44.11-py3-none-any.whl.metadata (6.6 kB)
+#8 18.64 Collecting botocore<1.45.0,>=1.44.11 (from boto3->-r requirements.txt (line 1))
+#8 18.83   Downloading botocore-1.44.11-py3-none-any.whl.metadata (5.6 kB)
+#8 18.98 Collecting jmespath<2.0.0,>=0.7.1 (from boto3->-r requirements.txt (line 1))
+#8 19.07   Downloading jmespath-1.1.0-py3-none-any.whl.metadata (7.6 kB)
+#8 19.47 Collecting s3transfer<0.20.0,>=0.19.0 (from boto3->-r requirements.txt (line 1))
+#8 19.57   Downloading s3transfer-0.19.3-py3-none-any.whl.metadata (1.7 kB)
+#8 19.81 Collecting python-dateutil<3.0.0,>=2.1 (from botocore<1.45.0,>=1.44.11->boto3->-r requirements.txt (line 1))
+#8 19.91   Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+#8 20.28 Collecting urllib3!=2.2.0,<3,>=1.25.4 (from botocore<1.45.0,>=1.44.11->boto3->-r requirements.txt (line 1))
+#8 20.45   Downloading urllib3-2.8.0-py3-none-any.whl.metadata (7.4 kB)
+#8 21.15 Collecting six>=1.5 (from python-dateutil<3.0.0,>=2.1->botocore<1.45.0,>=1.44.11->boto3->-r requirements.txt (line 1))
+#8 21.25   Downloading six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+#8 21.37 Downloading boto3-1.44.11-py3-none-any.whl (140 kB)
+#8 22.05 Downloading botocore-1.44.11-py3-none-any.whl (16.9 MB)
+#8 36.75    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.9/16.9 MB 1.2 MB/s eta 0:00:00
+#8 36.86 Downloading jmespath-1.1.0-py3-none-any.whl (20 kB)
+#8 37.19 Downloading s3transfer-0.19.3-py3-none-any.whl (90 kB)
+#8 37.80 Downloading python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+#8 38.55 Downloading urllib3-2.8.0-py3-none-any.whl (135 kB)
+#8 38.83 Downloading six-1.17.0-py2.py3-none-any.whl (11 kB)
+#8 38.91 Installing collected packages: urllib3, six, jmespath, python-dateutil, botocore, s3transfer, boto3
+#8 39.79 Successfully installed boto3-1.44.11 botocore-1.44.11 jmespath-1.1.0 python-dateutil-2.9.0.post0 s3transfer-0.19.3 six-1.17.0 urllib3-2.8.0
+#8 39.79 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+#8 40.27 
+#8 40.27 [notice] A new release of pip is available: 25.0.1 -> 26.3
+#8 40.27 [notice] To update, run: pip install --upgrade pip
+#8 DONE 40.5s
+
+#9 [5/6] COPY skills.py .
+#9 DONE 0.0s
+
+#10 [6/6] COPY hw3 ./hw3
+#10 DONE 0.0s
+
+#11 exporting to image
+#11 exporting layers
+#11 exporting layers 0.9s done
+#11 exporting manifest sha256:ca689df5b8650041107a052661c19d5fa08cf3e8fe857ec8f75439622cb1b1a4 done
+#11 exporting config sha256:77ad3fa28c9b1b179b012545be61f2b42f71e27841a2f9fe978da1d31805c57e done
+#11 naming to docker.io/library/skills:1.0 done
+#11 unpacking to docker.io/library/skills:1.0
+#11 unpacking to docker.io/library/skills:1.0 0.5s done
+#11 DONE 1.4s
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/m1jpuis79fu83evb6yk75ccu7
+
+$ docker images skills:1.0
+IMAGE        ID             DISK USAGE   CONTENT SIZE   EXTRA
+skills:1.0   ca689df5b865        283MB         66.7MB        
+
+$ kind load docker-image skills:1.0 --name hw5
+Image: "skills:1.0" with ID "sha256:ca689df5b8650041107a052661c19d5fa08cf3e8fe857ec8f75439622cb1b1a4" not yet present on node "hw5-control-plane", loading...
+
+$ docker exec hw5-control-plane crictl images
+IMAGE                                           TAG                  IMAGE ID            SIZE
+docker.io/kindest/kindnetd                      v20260820-69b56db7   8e13ccc0aaa68       35.7MB
+docker.io/kindest/local-path-helper             v20260131-7181c60a   8f375e9f93513       2.74MB
+docker.io/kindest/local-path-provisioner        v20260820-69b56db7   0771a8a05619f       14.2MB
+docker.io/library/skills                        1.0                  77ad3fa28c9b1       66.7MB
+registry.k8s.io/coredns/coredns                 v1.14.6              fbccbf70a429f       21.2MB
+registry.k8s.io/etcd                            3.7.0-0              c2e426bbd1cd6       20.5MB
+registry.k8s.io/kube-apiserver-arm64            v1.37.0              6003d52023b9d       97.1MB
+registry.k8s.io/kube-apiserver                  v1.37.0              6003d52023b9d       97.1MB
+registry.k8s.io/kube-controller-manager-arm64   v1.37.0              b1ad0e33c9012       85.1MB
+registry.k8s.io/kube-controller-manager         v1.37.0              b1ad0e33c9012       85.1MB
+registry.k8s.io/kube-proxy-arm64                v1.37.0              550b682d81d41       84.5MB
+registry.k8s.io/kube-proxy                      v1.37.0              550b682d81d41       84.5MB
+registry.k8s.io/kube-scheduler-arm64            v1.37.0              384eabc4fe526       59.1MB
+registry.k8s.io/kube-scheduler                  v1.37.0              384eabc4fe526       59.1MB
+registry.k8s.io/pause                           3.10                 afb61768ce381       268kB
+
+$ kubectl apply -f k8s/00-namespace.yaml
+namespace/hw5 created
+
+$ docker exec hw5-control-plane ls -la /hostdata
+total 224772
+drwxr-xr-x 3 root root        96 Nov 25 18:21 .
+drwxr-xr-x 1 root root      4096 Nov 25 18:41 ..
+-rw------- 1 root root 222881810 Nov 25 18:21 hh_analysts_2024.csv
+
+$ docker images --format {{.Repository}}:{{.Tag}} {{.Size}}
+skills:1.0 283MB
+nature-se-go-2026-c122-grpc-a136-masha363-notifier:latest 66.4MB
+nature-se-go-2026-c122-grpc-a136-masha363-notifier-2:latest 66.4MB
+nature-se-go-2026-c122-grpc-a136-masha363-loms-2:latest 65.8MB
+nature-se-go-2026-c122-grpc-a136-masha363-cart:latest 65.5MB
+nature-se-go-2026-c122-grpc-a136-masha363-cart-2:latest 65.5MB
+nature-se-go-2026-c122-grpc-a136-masha363-loms:latest 65.8MB
+nature-se-go-2026-c122-grpc-a136-masha363-gateway:latest 44.1MB
+nature-se-go-2026-c122-grpc-a136-masha363-gateway-2:latest 44.1MB
+nature-se-go-2026-c122-grpc-a136-masha363-billing:latest 436MB
+nature-se-go-2026-c122-grpc-a136-masha363-telegram:latest 78.9MB
+nature-se-go-2026-c122-grpc-a136-masha363-integration-tests:latest 1.31GB
+zookeeper:3.9.6 450MB
+flight-delay-mlops-worker:latest 783MB
+flight-delay-mlops-source:latest 783MB
+flight-delay-mlops-app:latest 783MB
+postgres:17-alpine 415MB
+flight-delay-mlops-mlflow:latest 1.33GB
+postgres:16 663MB
+postgres:17 667MB
+nature-se-go-2026-c122-grpc-a136-masha363-frontend:latest 92.1MB
+rabbitmq:4-management 455MB
+rustfs/rustfs:latest 371MB
+kindest/node:<none> 1.3GB
+testcontainers/ryuk:0.14.0 4.26MB
+testcontainers/ryuk:0.8.1 23.7MB
+
+===== 2026-11-25 21:43:28 шаг 1 готов =====

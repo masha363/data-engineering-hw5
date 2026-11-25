@@ -1,0 +1,46 @@
+Name:             cpu-low
+Namespace:        hw5
+Selector:         batch.kubernetes.io/controller-uid=883346eb-e05f-4441-8343-9261fda45a28
+Labels:           batch.kubernetes.io/controller-uid=883346eb-e05f-4441-8343-9261fda45a28
+                  batch.kubernetes.io/job-name=cpu-low
+                  controller-uid=883346eb-e05f-4441-8343-9261fda45a28
+                  exp=scheduling
+                  job-name=cpu-low
+Annotations:      <none>
+Parallelism:      1
+Completions:      1
+Completion Mode:  NonIndexed
+Suspend:          false
+Backoff Limit:    6
+Start Time:       Wed, 25 Nov 2026 21:59:11 +0300
+Pods Statuses:    1 Active (0 Ready) / 0 Succeeded / 1 Failed
+Pod Template:
+  Labels:  batch.kubernetes.io/controller-uid=883346eb-e05f-4441-8343-9261fda45a28
+           batch.kubernetes.io/job-name=cpu-low
+           controller-uid=883346eb-e05f-4441-8343-9261fda45a28
+           exp=scheduling
+           job-name=cpu-low
+  Containers:
+   work:
+    Image:      skills:1.0
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      sleep
+      900
+    Limits:
+      memory:  64Mi
+    Requests:
+      cpu:              6300m
+      memory:           32Mi
+    Environment:        <none>
+    Mounts:             <none>
+  Volumes:              <none>
+  Priority Class Name:  hw5-low
+  Node-Selectors:       <none>
+  Tolerations:          <none>
+Events:
+  Type    Reason            Age   From            Message
+  ----    ------            ----  ----            -------
+  Normal  SuccessfulCreate  19s   job-controller  Created pod: cpu-low-z297f
+  Normal  SuccessfulCreate  6s    job-controller  Created pod: cpu-low-6z69j

@@ -1,0 +1,6 @@
+LAST SEEN   TYPE      REASON             OBJECT                 MESSAGE
+14s         Warning   FailedScheduling   pod/cpu-waiter-hc9jl   0/1 nodes are available: 1 Insufficient cpu. preemption: not eligible due to preemptionPolicy=Never.
+1s          Normal    Scheduled          pod/cpu-waiter-hc9jl   Successfully assigned hw5/cpu-waiter-hc9jl to hw5-control-plane
+1s          Normal    Pulled             pod/cpu-waiter-hc9jl   Container image "skills:1.0" already present on machine and can be accessed by the pod
+1s          Normal    Created            pod/cpu-waiter-hc9jl   Container created
+1s          Normal    Started            pod/cpu-waiter-hc9jl   Container started

@@ -1,0 +1,50 @@
+Name:                 cpu-waiter-hc9jl
+Namespace:            hw5
+Priority:             -100
+Priority Class Name:  hw5-low
+Service Account:      default
+Node:                 <none>
+Labels:               batch.kubernetes.io/controller-uid=5a183037-70bc-40b7-b373-8ca33bb87bee
+                      batch.kubernetes.io/job-name=cpu-waiter
+                      controller-uid=5a183037-70bc-40b7-b373-8ca33bb87bee
+                      exp=scheduling
+                      job-name=cpu-waiter
+Annotations:          <none>
+Status:               Pending
+IP:                   
+IPs:                  <none>
+Controlled By:        Job/cpu-waiter
+Containers:
+  work:
+    Image:      skills:1.0
+    Port:       <none>
+    Host Port:  <none>
+    Command:
+      sleep
+      30
+    Limits:
+      memory:  64Mi
+    Requests:
+      cpu:        1500m
+      memory:     32Mi
+    Environment:  <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-9q8c6 (ro)
+Conditions:
+  Type           Status
+  PodScheduled   False 
+Volumes:
+  kube-api-access-9q8c6:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    Optional:                false
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason            Age   From               Message
+  ----     ------            ----  ----               -------
+  Warning  FailedScheduling  10s   default-scheduler  0/1 nodes are available: 1 Insufficient cpu. preemption: not eligible due to preemptionPolicy=Never.

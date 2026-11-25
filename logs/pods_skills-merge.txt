@@ -1,0 +1,2 @@
+NAME                 READY   STATUS      RESTARTS   AGE   IP            NODE                NOMINATED NODE   READINESS GATES
+skills-merge-lw7nq   0/1     Completed   0          7s    10.244.0.29   hw5-control-plane   <none>           <none>
